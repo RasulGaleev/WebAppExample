@@ -1,9 +1,5 @@
-import os.path
-
-import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.templating import Jinja2Templates
 
 from app.api import router as api_router
 
@@ -24,16 +20,15 @@ origins = [
     "http://localhost",
     "http://localhost:8000",
     "http://0.0.0.0",
-    "http://0.0.0.0:80",
     "http://92.38.48.73",
-    "http://92.38.48.73:80",
 ]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "OPTIONS", "DELETE", "PATCH", "PUT"],
+    allow_headers=["Content-Type", "Access-Control-Allow-Headers", "Access-Control-Allow-Origin"],
 )
 
 app.include_router(api_router)
