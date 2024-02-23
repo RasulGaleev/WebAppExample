@@ -11,8 +11,8 @@ app = FastAPI(
     title="Muslim Web Bot"
 )
 
-template_dir = os.path.join("app", "templates")
-templates = Jinja2Templates(directory=template_dir)
+# template_dir = os.path.join("app", "templates")
+# templates = Jinja2Templates(directory=template_dir)
 
 # static_dir = os.path.join("app", "static")
 # app.mount("/audio", StaticFiles(directory=os.path.join(static_dir, "audio")), name="audio")
@@ -21,17 +21,19 @@ templates = Jinja2Templates(directory=template_dir)
 # app.mount("/media", StaticFiles(directory=os.path.join(static_dir, "media")), name="media")
 
 origins = [
+    "http://localhost",
     "http://localhost:8000",
-    "http://0.0.0.0:80"
+    "http://0.0.0.0",
+    "http://0.0.0.0:80",
+    "http://92.38.48.73",
     "http://92.38.48.73:80",
 ]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_credentials=False,
-    allow_methods=["GET", "POST", "DELETE"],
-    allow_headers=["Content-Type", "Access-Control-Allow-Headers", "Access-Control-Allow-Origin"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.include_router(api_router)
@@ -45,6 +47,6 @@ app.include_router(api_router)
 # async def dua_page(request: Request, item_id: int = Query(..., alias="itemId")):
 #     return templates.TemplateResponse("dua.html", {"request": request, "item_id": item_id})
 
-
-if __name__ == '__main__':
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+#
+# if __name__ == '__main__':
+#     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
