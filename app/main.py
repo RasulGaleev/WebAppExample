@@ -21,8 +21,9 @@ templates = Jinja2Templates(directory=template_dir)
 # app.mount("/media", StaticFiles(directory=os.path.join(static_dir, "media")), name="media")
 
 origins = [
-    "http://92.38.48.73",
-    "http://localhost",
+    "http://localhost:8000",
+    "http://0.0.0.0:80"
+    "http://92.38.48.73:80",
 ]
 
 app.add_middleware(
