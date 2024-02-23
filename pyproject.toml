@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "muslimwebbot"
+version = "0.1.0"
+description = ""
+authors = ["Расул Галеев <RasulGaleev2005@yandex.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = {extras = ["all"], version = "^0.109.2"}
+sqlalchemy = {extras = ["asyncio"], version = "^2.0.25"}
+environs = "^10.3.0"
+asyncpg = "^0.29.0"
+aiogram = "^3.3.0"
+pytz = "^2024.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
