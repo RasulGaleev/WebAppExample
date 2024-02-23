@@ -19,8 +19,16 @@ app = FastAPI(
 # app.mount("/css", StaticFiles(directory=os.path.join(static_dir, "css")), name="css")
 # app.mount("/media", StaticFiles(directory=os.path.join(static_dir, "media")), name="media")
 
-
 app.include_router(api_router)
+
+# @app.middleware("http")
+# async def add_cors_headers(request, call_next):
+#     response = await call_next(request)
+#     response.headers["Access-Control-Allow-Origin"] = "http://92.38.48.73, http://localhost:8000"
+#     response.headers["Access-Control-Allow-Credentials"] = "true"
+#     response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+#     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+#     return response
 
 # @app.get("/")
 # async def main_page(request: Request):
@@ -31,7 +39,7 @@ app.include_router(api_router)
 # async def dua_page(request: Request, item_id: int = Query(..., alias="itemId")):
 #     return templates.TemplateResponse("dua.html", {"request": request, "item_id": item_id})
 
-origins = ["http://localhost:8000", "http://92.38.48.73"]
+origins = ["http://92.38.48.73", "http://localhost:8000"]
 
 app.add_middleware(
     CORSMiddleware,
