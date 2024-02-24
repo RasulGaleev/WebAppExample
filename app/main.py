@@ -10,10 +10,14 @@ app = FastAPI(
     openapi_url=f"/api/openapi.json",
     redirect_slashes=False
 )
-
-app.include_router(api_router)
-
-origins = ["http://92.38.48.73:80", "http://0.0.0.0:80", "http://localhost:8000"]
+origins = [
+    "http://localhost",
+    "http://localhost:8000",
+    "http://0.0.0.0",
+    "http://0.0.0.0:80",
+    "http://92.38.48.73",
+    "http://92.38.48.73:80",
+]
 
 app.add_middleware(
     CORSMiddleware,
@@ -23,6 +27,7 @@ app.add_middleware(
     allow_methods=["GET", "POST", "OPTIONS", "DELETE", "PATCH", "PUT"],
     allow_headers=["Content-Type", "Access-Control-Allow-Headers", "Access-Control-Allow-Origin"],
 )
+app.include_router(api_router)
 
 # template_dir = os.path.join("app", "templates")
 # templates = Jinja2Templates(directory=template_dir)
