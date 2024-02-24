@@ -14,7 +14,7 @@ router = APIRouter(
 )
 
 
-@router.get("/")
+@router.get("")
 async def get_all_categories(session: AsyncSession = Depends(get_async_session)) -> list[Category]:
     try:
         categories = await CategoryRepository.find_all(session=session)

@@ -9,7 +9,7 @@ router = APIRouter(
     prefix="/api",
     tags=["API"]
 )
-router.include_router(categories_router, )
+router.include_router(categories_router)
 router.include_router(chapters_router)
 router.include_router(duas_router)
 router.include_router(favorites_router)

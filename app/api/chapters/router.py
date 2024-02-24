@@ -12,7 +12,7 @@ router = APIRouter(
 )
 
 
-@router.get("/")
+@router.get("")
 async def get_all_chapters(session: AsyncSession = Depends(get_async_session)) -> list[Chapter]:
     try:
         all_chapters = await ChapterRepository.find_all(session=session)
