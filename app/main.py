@@ -19,8 +19,9 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=False,
+    expose_headers=["Content-Type"],
     allow_methods=["GET", "POST", "OPTIONS", "DELETE", "PATCH", "PUT"],
-    allow_headers=["Content-Type", "Access-Control-Allow-Headers", "Access-Control-Allow-Origin"]
+    allow_headers=["Content-Type", "Access-Control-Allow-Headers", "Access-Control-Allow-Origin"],
 )
 
 # template_dir = os.path.join("app", "templates")
