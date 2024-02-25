@@ -1,6 +1,8 @@
 from sqlalchemy import select, func, delete, insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.api.ads.models import AdOrm
+from app.api.ads.schemas import Ad, AdСreate
 from app.api.categories.models import CategoryOrm
 from app.api.categories.schemas import Category
 from app.api.chapters.models import ChapterOrm
@@ -153,5 +155,21 @@ class FavoriteRepository:
     @classmethod
     async def delete_by_id(cls, favorite_id: int, session: AsyncSession):
         stmt = delete(FavoriteOrm).filter(FavoriteOrm.id == favorite_id)
+        await session.execute(stmt)
+        await session.commit()
+
+
+class AdRepository:
+    @classmethod
+    async def find_all(cls, session: AsyncSession) -> list[Ad]:
+        query = select(AdOrm).order_by(AdOrm.id)
+        result = await session.execute(query)
+        ad_models = result.scalars().all()
+        ad_schemas = [Ad.model_validate(ad_model) for ad_model in ad_models]
+        return ad_schemas
+
+    @classmethod
+    async def create_ad(cls, ad_create: AdСreate, session: AsyncSession):
+        stmt = insert(AdOrm).values(**ad_create.model_dump())
         await session.execute(stmt)
         await session.commit()
