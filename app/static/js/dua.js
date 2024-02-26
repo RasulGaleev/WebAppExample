@@ -1,10 +1,10 @@
 const DUA_API = "http://92.38.48.73/api/duas";
 const AUDIO_API = "http://92.38.48.73/audio";
-const FAVORITE_API = "http://92.38.48.73/api/favorites";
+const FAVORITE_API = "http://92.38.48.73/api/favorites/";
 
 const urlParams = new URLSearchParams(window.location.search);
 
-const itemId = urlParams.get("item_id");
+const itemId = urlParams.get("itemId");
 
 if (itemId) {
   console.log(itemId);
@@ -19,7 +19,7 @@ async function renderContent(itemId) {
   contentList.innerHTML = "";
   let requestAPI = `${DUA_API}/filter?chapter_id=${itemId}`;
   let user = 1342244632;
-  let requestAPI2 = `${FAVORITE_API}/filter?user_id=${user}&content_type=dua`;
+  let requestAPI2 = `${FAVORITE_API}filter?user_id=${user}&content_type=dua`;
   let res2 = await fetch(requestAPI2);
   let data2 = await res2.json();
   try {
@@ -129,7 +129,7 @@ function check() {
 }
 
 async function deletingDua(id) {
-  let requestAPI = `${FAVORITE_API}/delete?favorite_id=${id}`;
+  let requestAPI = `${FAVORITE_API}delete?favorite_id=${id}`;
   fetch(requestAPI, {
     method: "DELETE",
   })
@@ -148,11 +148,132 @@ async function deletingDua(id) {
         error
       );
     });
+  renderFavorites2("dua");
+}
+
+async function renderFavorites2(type) {
+  let favoriteList = document.querySelector("#section3");
+  favoriteList.innerHTML = "";
+  let userId = 1342244632;
+  let requestAPI = `${FAVORITE_API}filter?user_id=${userId}&content_type=${type}`;
+  let res = await fetch(requestAPI);
+  let data = await res.json();
+
+  if (type === "chapter") {
+    try {
+      for (const item of data) {
+        let requestAPI3 = `${CHAPTER_API}/filter?chapter_id=${item.id}`;
+        let res2 = await fetch(requestAPI3);
+        let data2 = await res2.json();
+        let itemId = item.id;
+
+        data2.forEach(item => {
+          const chapterElement = document.createElement("div");
+          chapterElement.classList.add("chapter");
+          chapterElement.setAttribute("data-item-id", item.id);
+          chapterElement.innerHTML = `
+        <div class="chapter_left">
+            <div class="count">${item.dua_count} Дуа</div>
+            <div class="index">${item.id}</div>
+            <img src="./media/star-fill2.svg" alt="star" class="img__active" id="img_yellow"  data-item-id="${item.id}" data-content-type="chapter"/>
+        </div>
+        <p class="chapter__name">${item.chapter}</p>
+    `;
+          const starImageYellow = chapterElement.querySelector("#img_yellow");
+          starImageYellow.addEventListener("click", async function (event) {
+            event.stopPropagation();
+            deletingChapter(itemId);
+          });
+
+          chapterElement.addEventListener("click", function (event) {
+            let itemId = chapterElement.getAttribute("data-item-id");
+            window.location.href = `dua.html?itemId=${itemId}`;
+            renderContent(itemId);
+          });
+          favoriteList.appendChild(chapterElement);
+        });
+      }
+
+      if (data.length === 0) return;
+    } catch (error) {
+      console.error("Произошла ошибка:", error);
+    }
+  }
+  if (type === "dua") {
+    try {
+      for (const item of data) {
+        let requestAPI3 = `${DUA_API}/filter?dua_id=${item.id}`;
+        let res2 = await fetch(requestAPI3);
+        let data2 = await res2.json();
+        let contentId = item.content_id;
+        let itemId = item.id;
+
+        if (data2.length === 0) {
+          console.log("wtf");
+          favoriteList.innerHTML += `<p class="chapterP">Нет избранных</p>`;
+        } else {
+          data2.forEach(item => {
+            let requestAPI2 = `${AUDIO_API}/${item.audio}`;
+            const duaElement = document.createElement("div");
+            duaElement.classList.add("dua");
+            duaElement.setAttribute("data-item-id", item.id);
+            duaElement.innerHTML = `
+                          <div class="dua__navbar">
+                              <img src="./media/star-fill2.svg" alt="star" width="20px" class="dua__img" id="img_yellow"/>
+                              <p class="dua__navbar__p">Дуа ${item.id}</p>
+                              <img src="./media/play-circle-fill.svg" alt="star" width="20px" class="dua__img"" style="display: none"/>
+                          </div>
+                          <div class="dua__content">
+                              ${
+                                item.arab
+                                  ? `<p class="arabicContent">${item.arab}</p>`
+                                  : ""
+                              }
+                              ${
+                                item.transcript
+                                  ? `<p class="transcriptContent">${item.transcript}</p>`
+                                  : ""
+                              }
+                              ${
+                                item.translate
+                                  ? `<p class="russianContent">${item.translate}</p>`
+                                  : ""
+                              }
+                          </div>
+                          <div class="dua__info">
+                              <p class="dua_informat">${item.source}</p>
+                          </div>
+                          ${
+                            item.audio
+                              ? `<div class="audio__container">
+                                  <audio controls>
+                                      <source src="${requestAPI2}" type="audio/mpeg">
+                                      Your browser does not support the audio element.
+                                  </audio>
+                              </div>`
+                              : ""
+                          }
+                  `;
+            const starImageYellow = duaElement.querySelector("#img_yellow");
+            starImageYellow.addEventListener("click", async function (event) {
+              event.stopPropagation();
+              if (itemId == item.id) {
+                deletingDua(contentId);
+              }
+            });
+            favoriteList.appendChild(duaElement);
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Произошла ошибка:", error);
+    }
+  }
 }
 
 async function postingDua(favoriteData) {
   try {
-    const requestAPI = `${FAVORITE_API}/create`;
+    const requestAPI = `${FAVORITE_API}create`;
     const response = await fetch(requestAPI, {
       method: "POST",
       headers: {

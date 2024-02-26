@@ -1,7 +1,7 @@
 const CATEGORY_API = "http://92.38.48.73/api/categories";
 const CHAPTER_API = "http://92.38.48.73/api/chapters";
 const DUA_API = "http://92.38.48.73/api/duas";
-const FAVORITE_API = "http://92.38.48.73/api/favorites";
+const FAVORITE_API = "http://92.38.48.73/api/favorites/";
 const AUDIO_API = "http://92.38.48.73/audio";
 
 function toggleSearch() {
@@ -80,7 +80,7 @@ function handleScroll(element, event) {
     if (!isScrolling) return;
     e.preventDefault();
     const y = e.pageY - element.offsetTop;
-    const walk = (y - startY) * 2;
+    const walk = (y - startY) * 1;
     element.scrollTop = scrollTop - walk;
   });
 
@@ -88,7 +88,7 @@ function handleScroll(element, event) {
     if (!isScrolling) return;
     e.preventDefault();
     const y = e.touches[0].pageY - element.offsetTop;
-    const walk = (y - startY) * 2;
+    const walk = (y - startY) * 1;
     element.scrollTop = scrollTop - walk;
   });
 
@@ -112,7 +112,7 @@ let startY;
 
 section2.addEventListener("touchstart", e => {
   isScrolling = true;
-  startY = e.touches[0].pageY - section2.offsetTop;
+  startY = e.touches[0].pageY - section1.offsetTop;
   scrollTop = section2.scrollTop;
 });
 
@@ -120,7 +120,7 @@ section2.addEventListener("touchmove", e => {
   if (!isScrolling) return;
   e.preventDefault();
   const y = e.touches[0].pageY - section2.offsetTop;
-  const walk = (y - startY) * 2;
+  const walk = (y - startY) * 1;
   section2.scrollTop = scrollTop - walk;
 });
 
@@ -283,7 +283,7 @@ async function search(query) {
         contentElements.forEach(contentElement => {
           contentElement.addEventListener("click", async event => {
             const itemId = contentElement.getAttribute("data-item-id");
-            window.location.href = `dua?item_id=${itemId}`;
+            window.location.href = `dua?itemId=${itemId}`;
             renderContent(itemId);
           });
         });
@@ -372,7 +372,7 @@ async function renderCategory() {
         contentElements.forEach(contentElement => {
           contentElement.addEventListener("click", async event => {
             const itemId = contentElement.getAttribute("data-item-id");
-            window.location.href = `dua?item_id=${itemId}`;
+            window.location.href = `dua?itemId=${itemId}`;
             renderContent(itemId);
           });
         });
@@ -417,7 +417,7 @@ async function search1(query) {
 
       chapterElement.addEventListener("click", function (event) {
         let itemId = chapterElement.getAttribute("data-item-id");
-        window.location.href = `dua?item_id=${itemId}`;
+        window.location.href = `dua?itemId=${itemId}`;
         renderContent(itemId);
       });
       chapterList.appendChild(chapterElement);
@@ -432,9 +432,10 @@ async function search1(query) {
 async function renderChapter() {
   let chapterList = document.querySelector("#section2");
   chapterList.innerHTML = "";
+
   let requestAPI = `${CHAPTER_API}`;
   let user = 1342244632;
-  let requestAPI2 = `${FAVORITE_API}/filter?user_id=${user}&content_type=chapter`;
+  let requestAPI2 = `${FAVORITE_API}filter?user_id=${user}&content_type=chapter`;
   let res2 = await fetch(requestAPI2);
   let data2 = await res2.json();
 
@@ -470,13 +471,15 @@ async function renderChapter() {
 
       chapterElement.addEventListener("click", async function (event) {
         let itemId = chapterElement.getAttribute("data-item-id");
-        window.location.href = `dua?item_id=${itemId}`;
+        window.location.href = `dua?itemId=${itemId}`;
         renderContent(itemId);
       });
 
       starImageWhite.addEventListener("click", async function (event) {
         starImageWhite.classList.add("img__nonactive");
-        starImageWhite.classList.remove("img__nonactive");
+        starImageYellow.classList.remove("img__nonactive");
+        starImageYellow.classList.add("img__active");
+
         event.stopPropagation();
         const contentId = starImageWhite.getAttribute("data-item-id");
         const contentType = starImageWhite.getAttribute("data-content-type");
@@ -491,10 +494,11 @@ async function renderChapter() {
       });
       starImageYellow.addEventListener("click", async function (event) {
         event.stopPropagation();
-        let requestAPI4 = `${FAVORITE_API}/filter?user_id=${user}&content_type=chapter`;
+        let requestAPI4 = `${FAVORITE_API}filter?user_id=${user}&content_type=chapter`;
         let favoriteRes = await fetch(requestAPI4);
         let favoriteData = await favoriteRes.json();
         let contentId = starImageYellow.getAttribute("data-item-id");
+        console.log(contentId);
         for (const item of favoriteData) {
           if (item.id == contentId) {
             deletingChapter(contentId);
@@ -515,9 +519,18 @@ async function renderChapter() {
 
 async function renderFavorites(type) {
   let favoriteList = document.querySelector("#section3");
-  favoriteList.innerHTML = "";
+  let chapters = document.querySelectorAll(".chapter");
+
+  chapters.forEach(chapter => {
+    chapter.parentNode.removeChild(chapter);
+  });
+  let duas = document.querySelectorAll(".dua");
+
+  duas.forEach(dua => {
+    dua.parentNode.removeChild(dua);
+  });
   let userId = 1342244632;
-  let requestAPI = `${FAVORITE_API}/filter?user_id=${userId}&content_type=${type}`;
+  let requestAPI = `${FAVORITE_API}filter?user_id=${userId}&content_type=${type}`;
   let res = await fetch(requestAPI);
   let data = await res.json();
 
@@ -527,8 +540,6 @@ async function renderFavorites(type) {
         let requestAPI3 = `${CHAPTER_API}/filter?chapter_id=${item.id}`;
         let res2 = await fetch(requestAPI3);
         let data2 = await res2.json();
-        let contentId = item.content_id;
-        let itemId = item.id;
 
         data2.forEach(item => {
           const chapterElement = document.createElement("div");
@@ -544,15 +555,14 @@ async function renderFavorites(type) {
     `;
           const starImageYellow = chapterElement.querySelector("#img_yellow");
           starImageYellow.addEventListener("click", async function (event) {
+            let itemId = chapterElement.getAttribute("data-item-id");
             event.stopPropagation();
-            if (itemId == item.id) {
-              deletingChapter(contentId);
-            }
+            deletingChapter(itemId);
           });
 
           chapterElement.addEventListener("click", function (event) {
             let itemId = chapterElement.getAttribute("data-item-id");
-            window.location.href = `dua?item_id=${itemId}`;
+            window.location.href = `dua?itemId=${itemId}`;
             renderContent(itemId);
           });
           favoriteList.appendChild(chapterElement);
@@ -570,7 +580,6 @@ async function renderFavorites(type) {
         let requestAPI3 = `${DUA_API}/filter?dua_id=${item.id}`;
         let res2 = await fetch(requestAPI3);
         let data2 = await res2.json();
-        let contentId = item.content_id;
         let itemId = item.id;
 
         if (data2.length === 0) {
@@ -623,7 +632,7 @@ async function renderFavorites(type) {
             starImageYellow.addEventListener("click", async function (event) {
               event.stopPropagation();
               if (itemId == item.id) {
-                deletingDua(contentId);
+                deletingDua(itemId);
               }
             });
             favoriteList.appendChild(duaElement);
@@ -643,7 +652,7 @@ back.addEventListener("click", () => {
 });
 async function postingChapter(favoriteData) {
   try {
-    const requestAPI = `${FAVORITE_API}/create`;
+    const requestAPI = `${FAVORITE_API}create`;
     const response = await fetch(requestAPI, {
       method: "POST",
       headers: {
@@ -662,7 +671,7 @@ async function postingChapter(favoriteData) {
 }
 
 async function deletingChapter(id) {
-  let requestAPI = `${FAVORITE_API}/delete?favorite_id=${id}`;
+  let requestAPI = `${FAVORITE_API}delete?favorite_id=${id}`;
   fetch(requestAPI, {
     method: "DELETE",
   })
@@ -683,9 +692,32 @@ async function deletingChapter(id) {
     });
   renderFavorites("chapter");
 }
+document.addEventListener("DOMContentLoaded", function () {
+  const chapterRadio = document
+    .getElementById("chapterCheck")
+    .querySelector('input[type="radio"]');
+  const duaRadio = document
+    .getElementById("duaCheck")
+    .querySelector('input[type="radio"]');
+
+  duaRadio.addEventListener("click", function () {
+    if (duaRadio.checked) {
+      console.log("wtf");
+      renderFavorites("dua");
+      chapterRadio.checked = false;
+    }
+  });
+
+  chapterRadio.addEventListener("click", function () {
+    if (chapterRadio.checked) {
+      renderFavorites("chapter");
+      duaRadio.checked = false;
+    }
+  });
+});
 
 async function deletingDua(id) {
-  let requestAPI = `${FAVORITE_API}/delete?favorite_id=${id}`;
+  let requestAPI = `${FAVORITE_API}delete?favorite_id=${id}`;
   fetch(requestAPI, {
     method: "DELETE",
   })
@@ -707,39 +739,16 @@ async function deletingDua(id) {
   renderFavorites("dua");
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-  const chapterRadio = document
-    .getElementById("chapterCheck")
-    .querySelector('input[type="radio"]');
-  const duaRadio = document
-    .getElementById("duaCheck")
-    .querySelector('input[type="radio"]');
-
-  duaRadio.addEventListener("click", function () {
-    if (duaRadio.checked) {
-      chapterRadio.checked = false;
-      renderFavorites("dua");
-    }
-  });
-
-  chapterRadio.addEventListener("click", function () {
-    if (chapterRadio.checked) {
-      duaRadio.checked = false;
-      renderFavorites("chapter");
-    }
-  });
-});
-
 function loadAd() {
   fetch("http://92.38.48.73/api/ads/last")
     .then(response => response.json())
     .then(data => {
       const ad = data;
-      const mainAdImg = document.getElementById("mainAd");
-      const mainAdLink = document.getElementById("mainA");
+      const mainAdImg2 = document.getElementById("mainAd2");
+      const mainAdLink2 = document.getElementById("mainA2");
 
-      mainAdImg.src = `http://92.38.48.73/ads/${ad.img}`;
-      mainAdLink.href = ad.url;
+      mainAdImg2.src = `http://92.38.48.73/ads/${ad.img}`;
+      mainAdLink2.href = ad.url;
     })
     .catch(error => {
       console.error("Ошибка при загрузке рекламы:", error);

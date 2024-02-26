@@ -35,8 +35,8 @@ async def main_page(request: Request):
 
 
 @app.get("/dua")
-async def dua_page(request: Request, item_id: int = Query(..., alias="item_id")):
-    return templates.TemplateResponse("dua.html", {"request": request, "item_id": item_id})
+async def dua_page(request: Request, item_id: int = Query(..., alias="itemId")):
+    return templates.TemplateResponse("dua.html", {"request": request, "itemId": item_id})
 
 
 origins = [
