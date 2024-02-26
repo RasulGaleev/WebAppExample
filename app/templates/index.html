@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <div class="container" id="container">
+      <!-- ? navbar start ----------------------------------------------------------------->
+      <div class="navbar">
+        <div class="nav-items">
+          <!-- Ваши элементы навигационной панели -->
+          <a
+            class="logo"
+            onclick=""
+            data-bs-toggle="offcanvas"
+            href="#offcanvasExample"
+            role="button"
+            aria-controls="offcanvasExample"
+          >
+            <img
+              src="/media/iconkrep.png"
+              alt="logo"
+              width="55px"
+              height="45px"
+              class="logoicon"
+            />
+            <img
+              src="/media/three-dots.png"
+              alt="more"
+              height="25px"
+              width="30px"
+            />
+          </a>
+          <h1 class="name">Крепость Мусульманина</h1>
+        </div>
+        <div class="search-container">
+          <div class="search-icon" onclick="toggleSearch()">
+            <img
+              src="/media/search-icon.svg"
+              alt="Search Icon"
+              height="40px"
+              class="searchicon"
+            />
+          </div>
+          <div class="search-input" style="display: none">
+            <img
+              class="close-icon"
+              src="/media/arrow.png"
+              alt="Close Icon"
+              onclick="closeSearch()"
+              id="btn_back"
+            />
+            <input
+              type="text"
+              placeholder="Введите запрос"
+              class="search-inp"
+              id="search-inp"
+              aria-label="Search"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="navv">
+        <a id="mainA" href="">
+          <img src="" alt="ad" id="mainAd" />
+        </a>
+        <div class="navbar_bottom">
+          <div
+            class="navbar_bottom__a section-nav active-section"
+            data-section-id="section1"
+            id="sec1"
+          >
+            <img
+              src="/media/list-ol.svg"
+              alt="list"
+              height="25px"
+              width="30px"
+              class="list-icon"
+            />
+            категории
+          </div>
+          <div
+            class="navbar_bottom__a section-nav"
+            data-section-id="section2"
+            id="sec2"
+          >
+            <img
+              src="/media/list-ul.svg"
+              alt="list"
+              height="25px"
+              width="30px"
+              class="list-icon"
+            />
+            все главы
+          </div>
+          <div
+            class="navbar_bottom__a section-nav"
+            data-section-id="section2"
+            id="sec2"
+          >
+            <img
+              src="/media/heart-fill.svg"
+              alt="list"
+              height="25px"
+              width="30px"
+              class="list-icon"
+            />
+            избранное
+          </div>
+        </div>
+      </div>
+      <div class="scroll-container">
+        <div class="section" id="section1"></div>
+        <div class="section" id="section2">Section 2 Content</div>
+        <div class="sect3">
+          <div class="checkbox" id="indexCheck">
+            <div class="checkbox1" id="chapterCheck">
+              <input
+                checked
+                type="radio"
+                name="checkbox"
+                class="checkboxes arabicCheckbox"
+                id="chapterCheckboxInput"
+              />
+              <label for="chapterCheckboxInput" class="labels">Главы</label>
+            </div>
+            <div class="checkbox1" id="duaCheck">
+              <input
+                type="radio"
+                name="checkbox"
+                class="checkboxes transcriptCheckbox"
+                id="duaCheckboxInput"
+              />
+              <label for="duaCheckboxInput" class="labels">Дуа</label>
+            </div>
+          </div>
+          <div class="section" id="section3"></div>
+        </div>
+        <!-- Добавьте контент для дополнительных разделов -->
+      </div>
+      <!-- ? navbar end ----------------------------------------------------------------->
+      <div
+        class="offcanvas offcanvas-start"
+        tabindex="-1"
+        style="width: 270px"
+        id="offcanvasExample"
+        aria-labelledby="offcanvasExampleLabel"
+      >
+        <div class="offcanvas-header">
+          <img
+            src="/media/iconkrep.png"
+            alt="logo"
+            width="90px"
+            height="80px"
+            class="logoicon2"
+          />
+          <h1 class="name2">Крепость Мусульманина</h1>
+        </div>
+        <div class="offcanvas-body">
+          <div class="offcanvas__body_top">
+            <div
+              class="offcanvas__a active-section1"
+              data-bs-dismiss="offcanvas"
+              aria-label="Close"
+              data-target="section1"
+            >
+              <img
+                src="/media/list-ol1.svg"
+                alt="list"
+                height="25px"
+                width="30px"
+                class="offcanvas-icon"
+              />
+              Категории
+            </div>
+            <div
+              class="offcanvas__a"
+              data-section-id="section2"
+              data-bs-dismiss="offcanvas"
+              data-target="section2"
+              aria-label="Close"
+            >
+              <img
+                src="/media/list-ul1.svg"
+                alt="list"
+                height="25px"
+                width="30px"
+                class="offcanvas-icon"
+              />
+              Все главы
+            </div>
+            <div
+              class="offcanvas__a"
+              data-section-id="section3"
+              data-bs-dismiss="offcanvas"
+              data-target="section3"
+              aria-label="Close"
+            >
+              <img
+                src="/media/heart-fill2.svg"
+                alt="list"
+                height="25px"
+                width="30px"
+                class="offcanvas-icon"
+              />
+              Избранное
+            </div>
+          </div>
+          <div class="offcanvas-body_middle">
+            <p class="offcanvas-body__p">О программе</p>
+            <div
+              class="offcanvas__a"
+              data-bs-dismiss="offcanvas"
+              aria-label="Close"
+              data-bs-toggle="modal"
+              data-bs-target="#exampleModal"
+            >
+              <img
+                src="/media/info-circle-fill.svg"
+                alt="list"
+                height="20px"
+                width="20px"
+                class="offcanvas-icon"
+              />
+              О программе
+            </div>
+            <div
+              class="offcanvas__a"
+              data-bs-dismiss="offcanvas"
+              aria-label="Close"
+            >
+              <a href="https://t.me/imanApps" class="offcanvas__link">
+                <img
+                  src="/media/cursor-fill.svg"
+                  alt="list"
+                  height="20px"
+                  width="20px"
+                  class="offcanvas-icon"
+                />
+                t.me/imanApps
+              </a>
+            </div>
+            <div
+              class="offcanvas__a"
+              data-bs-dismiss="offcanvas"
+              aria-label="Close"
+            >
+              <a href="https://imanapps.ru/" class="offcanvas__link">
+                <img
+                  src="/media/box-arrow-up-right.svg"
+                  alt="list"
+                  height="20px"
+                  width="20px"
+                  class="offcanvas-icon"
+                />
+                www.imanApps.ru
+              </a>
+            </div>
+            <div
+              class="offcanvas__a"
+              data-bs-dismiss="offcanvas"
+              aria-label="Close"
+            >
+              <a href="http://fortress-m.ru" class="offcanvas__link">
+                <img
+                  src="/media/box-arrow-up-right.svg"
+                  alt="list"
+                  height="20px"
+                  width="20px"
+                  class="offcanvas-icon"
+                />
+                Крепость[Онлайн]
+              </a>
+            </div>
+            <div class="share" data-bs-dismiss="offcanvas" aria-label="Close">
+              <img
+                src="/media/share-fill.svg"
+                alt="list"
+                height="20px"
+                width="20px"
+                class="offcanvas-icon"
+                style="margin-right: 15px"
+              />
+              Вставьте сюда ссылку после деплоя
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- modal -------------------------------------------------------->
+
+      <!-- Modal -->
+      <div
+        class="modal fade"
+        id="exampleModal"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <img
+                src="/media/iconkrep.png"
+                alt="logo"
+                width="90px"
+                height="80px"
+                class="logoicon2"
+              />
+              <h1 class="modal-title fs-5" id="exampleModalLabel">
+                О программе
+              </h1>
+            </div>
+            <div class="modal-body">
+              <p class="modal-body__top">
+                Приложение "Крепость Мусульманина" для Android устройств
+              </p>
+              <ul class="modal-body__middle__ul">
+                <li class="modal-body__middle">
+                  Приложение создано по книге: Саида бин Али бин Вахф
+                  аль-Кахтани "Крепость мусульманина"
+                </li>
+                <li class="modal-body__middle">
+                  Изначально аудиофайлы дуа не скачаныm воспроизведение идет
+                  через интернет, но есть возможность скачать, чтобы приложение
+                  не зависило от интернета
+                </li>
+                <li class="modal-body__middle">
+                  В приложение можно добавить ДУА в Избранное
+                </li>
+                <li class="modal-body__middle">
+                  В приложении можно создать напоминание о выбранном дуа, в
+                  определенное время
+                </li>
+              </ul>
+              <p class="modal-body__bottom">
+                Оценить в Play Market
+                <a class="modal-body__link" href="https://goo.gl?UjRmxy"
+                  >https://goo.gl?UjRmxy</a
+                >
+              </p>
+              <p class="modal-body__bottom">
+                imanApps в Telegram
+                <a class="modal-body__link" href="https://t.me/imanApps"
+                  >https://t.me/imanApps</a
+                >
+              </p>
+            </div>
+            <div class="modal-footer">
+              <p class="modal-footer__btn" data-bs-dismiss="modal">ок</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- modal end ---------------------------------------------------->
+    </div>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="/js/main.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

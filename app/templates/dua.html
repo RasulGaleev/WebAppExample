@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="navbar2">
+        <a href="/">
+          <img
+            src="/media/arrow.png"
+            alt="back"
+            width="40px"
+            class="navbar__img"
+          />
+        </a>
+        Дуа из Корана
+      </div>
+      <div class="checkbox">
+        <div class="checkbox1">
+          <input
+            checked
+            type="checkbox"
+            name="checkbox"
+            class="checkboxes arabicCheckbox"
+          />
+          <label for="checkbox" class="labels">Арабский</label>
+        </div>
+        <div class="checkbox1">
+          <input
+            checked
+            type="checkbox"
+            name="checkbox"
+            class="checkboxes transcriptCheckbox"
+          />
+          <label for="checkbox" class="labels">Транскрипт</label>
+        </div>
+        <div class="checkbox1">
+          <input
+            checked
+            type="checkbox"
+            name="checkbox"
+            class="checkboxes russianCheckbox"
+          />
+          <label for="checkbox" class="labels">Русский</label>
+        </div>
+      </div>
+      <div id="content2"></div>
+    </div>
+
+    <script src="/js/dua.js"></script>
+  </body>
+</html>

@@ -1,9 +1,8 @@
-const CATEGORY_API =
-  "https://3d57-95-26-81-230.ngrok-free.app/api/categories/";
-const CHAPTER_API =
-  "https://3d57-95-26-81-230.ngrok-free.app/api/chapters/";
-const DUA_API =
-  "https://3d57-95-26-81-230.ngrok-free.app/api/duas/filter?chapter_id=";
+const CATEGORY_API = "http://92.38.48.73/api/categories";
+const CHAPTER_API = "http://92.38.48.73/api/chapters";
+const DUA_API = "http://92.38.48.73/api/duas";
+const FAVORITE_API = "http://92.38.48.73/api/favorites";
+const AUDIO_API = "http://92.38.48.73/audio";
 
 function toggleSearch() {
   const navItems = document.querySelector(".nav-items");
@@ -31,6 +30,7 @@ const scrollContainer = document.querySelector(".scroll-container");
 const sectionOffcanvas = document.querySelectorAll(".offcanvas__a");
 
 const section2 = document.querySelector("#section2");
+const section3 = document.querySelector("#section3");
 scrollContainer.addEventListener("scroll", () => {
   const scrollLeft = scrollContainer.scrollLeft;
   const containerWidth = scrollContainer.clientWidth;
@@ -105,6 +105,8 @@ function handleScroll(element, event) {
 sections.forEach(section => {
   handleScroll(section);
 });
+const sect3 = document.querySelector(".sect3");
+handleScroll(sect3);
 
 let startY;
 
@@ -168,27 +170,6 @@ scrollContainer.addEventListener("touchend", () => {
   isScrolling = false;
 });
 
-sectionNavs.forEach((nav, index) => {
-  nav.addEventListener("click", () => {
-    sections[index].scrollIntoView({
-      behavior: "smooth",
-      block: "nearest",
-      inline: "nearest",
-    });
-  });
-});
-
-sectionNavs.forEach((nav, index) => {
-  nav.addEventListener("click", event => {
-    event.preventDefault(); // Предотвращаем выполнение действия по умолчанию
-    sections[index].scrollIntoView({
-      behavior: "smooth",
-      block: "nearest",
-      inline: "nearest",
-    });
-  });
-});
-
 function updateActiveSection(navIndex = null) {
   const scrollLeft = scrollContainer.scrollLeft;
   const containerWidth = scrollContainer.clientWidth;
@@ -225,17 +206,16 @@ function updateActiveSection(navIndex = null) {
 sectionNavs.forEach((nav, index) => {
   nav.addEventListener("click", () => {
     scrollContainer.scrollTop = 0;
-    const section = sections[index];
-    const sectionRect = section.getBoundingClientRect();
-    const containerRect = scrollContainer.getBoundingClientRect();
-    const offsetTop = sectionRect.top - containerRect.top;
-    const currentScrollTop = scrollContainer.scrollTop;
+    let section = sections[index];
+    let sectionRect = section.getBoundingClientRect();
+    let containerRect = scrollContainer.getBoundingClientRect();
+    let offsetTop = sectionRect.top - containerRect.top;
+    let currentScrollTop = scrollContainer.scrollTop;
 
     scrollContainer.scrollTop = currentScrollTop + offsetTop;
     section.scrollIntoView({
       behavior: "smooth",
       block: "nearest",
-      inline: "nearest",
     });
   });
 });
@@ -255,10 +235,7 @@ const section1 = document.getElementById("section1");
 async function search(query) {
   let categoryList = document.querySelector("#section1");
   let requestAPI = `${CATEGORY_API}filter?query=${query}`;
-  const headers = new Headers({
-    "ngrok-skip-browser-warning": "true",
-  });
-  let res = await fetch(requestAPI, { headers });
+  let res = await fetch(requestAPI);
   let data = await res.json();
 
   categoryList.innerHTML = "";
@@ -291,8 +268,8 @@ async function search(query) {
 
         const contentContainer = categoryElement.querySelector(".card-content");
 
-        const requestAPI2 = `${CHAPTER_API}filter?category_id=${categoryId}`;
-        const res = await fetch(requestAPI2, { headers });
+        const requestAPI2 = `${CHAPTER_API}/filter?category_id=${categoryId}`;
+        const res = await fetch(requestAPI2);
         const data2 = await res.json();
 
         let contentHTML = "";
@@ -306,7 +283,7 @@ async function search(query) {
         contentElements.forEach(contentElement => {
           contentElement.addEventListener("click", async event => {
             const itemId = contentElement.getAttribute("data-item-id");
-            window.location.href = `dua?itemId=${itemId}`;
+            window.location.href = `dua?item_id=${itemId}`;
             renderContent(itemId);
           });
         });
@@ -341,12 +318,12 @@ async function renderCategory() {
   });
 
   try {
-    let res = await fetch(requestAPI, { headers });
+    let res = await fetch(requestAPI);
     let data = await res.json();
     console.log(data);
 
     const requestAPI2 = `${CHAPTER_API}`;
-    const res2 = await fetch(requestAPI2, { headers });
+    const res2 = await fetch(requestAPI2);
     const data2 = await res2.json();
 
     categoryList.innerHTML = "";
@@ -395,7 +372,7 @@ async function renderCategory() {
         contentElements.forEach(contentElement => {
           contentElement.addEventListener("click", async event => {
             const itemId = contentElement.getAttribute("data-item-id");
-            window.location.href = `dua?itemId=${itemId}`;
+            window.location.href = `dua?item_id=${itemId}`;
             renderContent(itemId);
           });
         });
@@ -420,13 +397,10 @@ if (itemId) {
 async function search1(query) {
   let chapterList = document.querySelector("#section2");
   chapterList.innerHTML = "";
-  let requestAPI = `${CHAPTER_API}filter?query=${query}`;
-  const headers = new Headers({
-    "ngrok-skip-browser-warning": "true",
-  });
+  let requestAPI = `${CHAPTER_API}/filter?query=${query}`;
 
   try {
-    let res = await fetch(requestAPI, { headers });
+    let res = await fetch(requestAPI);
     let data = await res.json();
     data.forEach(item => {
       const chapterElement = document.createElement("div");
@@ -443,7 +417,7 @@ async function search1(query) {
 
       chapterElement.addEventListener("click", function (event) {
         let itemId = chapterElement.getAttribute("data-item-id");
-        window.location.href = `dua?itemId=${itemId}`;
+        window.location.href = `dua?item_id=${itemId}`;
         renderContent(itemId);
       });
       chapterList.appendChild(chapterElement);
@@ -459,13 +433,13 @@ async function renderChapter() {
   let chapterList = document.querySelector("#section2");
   chapterList.innerHTML = "";
   let requestAPI = `${CHAPTER_API}`;
-
-  const headers = new Headers({
-    "ngrok-skip-browser-warning": "true",
-  });
+  let user = 1342244632;
+  let requestAPI2 = `${FAVORITE_API}/filter?user_id=${user}&content_type=chapter`;
+  let res2 = await fetch(requestAPI2);
+  let data2 = await res2.json();
 
   try {
-    let res = await fetch(requestAPI, { headers });
+    let res = await fetch(requestAPI);
     let data = await res.json();
 
     console.log(data);
@@ -478,16 +452,58 @@ async function renderChapter() {
         <div class="chapter_left">
             <div class="count">${item.dua_count} Дуа</div>
             <div class="index">${item.id}</div>
-            <img src="./media/star.png" alt="star" class="img__star"/>
+            <img src="./media/star-fill.svg" alt="star" class="img__active" id="img_white" data-item-id="${item.id}" data-content-type="chapter"/>
+            <img src="./media/star-fill2.svg" alt="star" class="img__nonactive" id="img_yellow"  data-item-id="${item.id}" data-content-type="chapter"/>
         </div>
         <p class="chapter__name">${item.chapter}</p>
     `;
-
-      chapterElement.addEventListener("click", function (event) {
+      const starImageWhite = chapterElement.querySelector("#img_white");
+      const starImageYellow = chapterElement.querySelector("#img_yellow");
+      data2.forEach(item => {
         let itemId = chapterElement.getAttribute("data-item-id");
-        window.location.href = `dua?itemId=${itemId}`;
+        if (item.id == itemId) {
+          starImageWhite.classList.add("img__nonactive");
+          starImageYellow.classList.remove("img__nonactive");
+          starImageYellow.classList.add("img__active");
+        }
+      });
+
+      chapterElement.addEventListener("click", async function (event) {
+        let itemId = chapterElement.getAttribute("data-item-id");
+        window.location.href = `dua?item_id=${itemId}`;
         renderContent(itemId);
       });
+
+      starImageWhite.addEventListener("click", async function (event) {
+        starImageWhite.classList.add("img__nonactive");
+        starImageWhite.classList.remove("img__nonactive");
+        event.stopPropagation();
+        const contentId = starImageWhite.getAttribute("data-item-id");
+        const contentType = starImageWhite.getAttribute("data-content-type");
+
+        const favoriteData = {
+          content_id: parseInt(contentId),
+          content_type: contentType,
+          user_id: user,
+        };
+
+        postingChapter(favoriteData);
+      });
+      starImageYellow.addEventListener("click", async function (event) {
+        event.stopPropagation();
+        let requestAPI4 = `${FAVORITE_API}/filter?user_id=${user}&content_type=chapter`;
+        let favoriteRes = await fetch(requestAPI4);
+        let favoriteData = await favoriteRes.json();
+        let contentId = starImageYellow.getAttribute("data-item-id");
+        for (const item of favoriteData) {
+          if (item.id == contentId) {
+            deletingChapter(contentId);
+            starImageWhite.classList.remove("img__nonactive");
+            starImageYellow.classList.add("img__nonactive");
+          }
+        }
+      });
+
       chapterList.appendChild(chapterElement);
     });
 
@@ -497,11 +513,241 @@ async function renderChapter() {
   }
 }
 
+async function renderFavorites(type) {
+  let favoriteList = document.querySelector("#section3");
+  favoriteList.innerHTML = "";
+  let userId = 1342244632;
+  let requestAPI = `${FAVORITE_API}/filter?user_id=${userId}&content_type=${type}`;
+  let res = await fetch(requestAPI);
+  let data = await res.json();
+
+  if (type === "chapter") {
+    try {
+      for (const item of data) {
+        let requestAPI3 = `${CHAPTER_API}/filter?chapter_id=${item.id}`;
+        let res2 = await fetch(requestAPI3);
+        let data2 = await res2.json();
+        let contentId = item.content_id;
+        let itemId = item.id;
+
+        data2.forEach(item => {
+          const chapterElement = document.createElement("div");
+          chapterElement.classList.add("chapter");
+          chapterElement.setAttribute("data-item-id", item.id);
+          chapterElement.innerHTML = `
+        <div class="chapter_left">
+            <div class="count">${item.dua_count} Дуа</div>
+            <div class="index">${item.id}</div>
+            <img src="./media/star-fill2.svg" alt="star" class="img__active" id="img_yellow"  data-item-id="${item.id}" data-content-type="chapter"/>
+        </div>
+        <p class="chapter__name">${item.chapter}</p>
+    `;
+          const starImageYellow = chapterElement.querySelector("#img_yellow");
+          starImageYellow.addEventListener("click", async function (event) {
+            event.stopPropagation();
+            if (itemId == item.id) {
+              deletingChapter(contentId);
+            }
+          });
+
+          chapterElement.addEventListener("click", function (event) {
+            let itemId = chapterElement.getAttribute("data-item-id");
+            window.location.href = `dua?item_id=${itemId}`;
+            renderContent(itemId);
+          });
+          favoriteList.appendChild(chapterElement);
+        });
+      }
+
+      if (data.length === 0) return;
+    } catch (error) {
+      console.error("Произошла ошибка:", error);
+    }
+  }
+  if (type === "dua") {
+    try {
+      for (const item of data) {
+        let requestAPI3 = `${DUA_API}/filter?dua_id=${item.id}`;
+        let res2 = await fetch(requestAPI3);
+        let data2 = await res2.json();
+        let contentId = item.content_id;
+        let itemId = item.id;
+
+        if (data2.length === 0) {
+          console.log("wtf");
+          favoriteList.innerHTML += `<p class="chapterP">Нет избранных</p>`;
+        } else {
+          data2.forEach(item => {
+            let requestAPI2 = `${AUDIO_API}/${item.audio}`;
+            const duaElement = document.createElement("div");
+            duaElement.classList.add("dua");
+            duaElement.setAttribute("data-item-id", item.id);
+            duaElement.innerHTML = `
+                          <div class="dua__navbar">
+                              <img src="./media/star-fill2.svg" alt="star" width="20px" class="dua__img" id="img_yellow"/>
+                              <p class="dua__navbar__p">Дуа ${item.id}</p>
+                              <img src="./media/play-circle-fill.svg" alt="star" width="20px" class="dua__img"" style="display: none"/>
+                          </div>
+                          <div class="dua__content">
+                              ${
+                                item.arab
+                                  ? `<p class="arabicContent">${item.arab}</p>`
+                                  : ""
+                              }
+                              ${
+                                item.transcript
+                                  ? `<p class="transcriptContent">${item.transcript}</p>`
+                                  : ""
+                              }
+                              ${
+                                item.translate
+                                  ? `<p class="russianContent">${item.translate}</p>`
+                                  : ""
+                              }
+                          </div>
+                          <div class="dua__info">
+                              <p class="dua_informat">${item.source}</p>
+                          </div>
+                          ${
+                            item.audio
+                              ? `<div class="audio__container">
+                                  <audio controls>
+                                      <source src="${requestAPI2}" type="audio/mpeg">
+                                      Your browser does not support the audio element.
+                                  </audio>
+                              </div>`
+                              : ""
+                          }
+                  `;
+            const starImageYellow = duaElement.querySelector("#img_yellow");
+            starImageYellow.addEventListener("click", async function (event) {
+              event.stopPropagation();
+              if (itemId == item.id) {
+                deletingDua(contentId);
+              }
+            });
+            favoriteList.appendChild(duaElement);
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Произошла ошибка:", error);
+    }
+  }
+}
+
 let back = document.querySelector("#btn_back");
 back.addEventListener("click", () => {
   renderChapter();
   renderCategory();
 });
+async function postingChapter(favoriteData) {
+  try {
+    const requestAPI = `${FAVORITE_API}/create`;
+    const response = await fetch(requestAPI, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(favoriteData),
+    });
+    if (!response.ok) {
+      throw new Error("Ошибка при добавлении в избранное");
+    }
+    console.log("Успешно добавлено в избранное");
+  } catch (error) {
+    console.error("Произошла ошибка при добавлении в избранное:", error);
+  }
+  renderFavorites("chapter");
+}
+
+async function deletingChapter(id) {
+  let requestAPI = `${FAVORITE_API}/delete?favorite_id=${id}`;
+  fetch(requestAPI, {
+    method: "DELETE",
+  })
+    .then(response => {
+      // Обработка успешного ответа
+      if (response.ok) {
+        console.log("Избранный элемент успешно удален");
+      } else {
+        console.error("Ошибка удаления избранного элемента");
+      }
+    })
+    .catch(error => {
+      // Обработка ошибки
+      console.error(
+        "Произошла ошибка при удалении избранного элемента:",
+        error
+      );
+    });
+  renderFavorites("chapter");
+}
+
+async function deletingDua(id) {
+  let requestAPI = `${FAVORITE_API}/delete?favorite_id=${id}`;
+  fetch(requestAPI, {
+    method: "DELETE",
+  })
+    .then(response => {
+      // Обработка успешного ответа
+      if (response.ok) {
+        console.log("Избранный элемент успешно удален");
+      } else {
+        console.error("Ошибка удаления избранного элемента");
+      }
+    })
+    .catch(error => {
+      // Обработка ошибки
+      console.error(
+        "Произошла ошибка при удалении избранного элемента:",
+        error
+      );
+    });
+  renderFavorites("dua");
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  const chapterRadio = document
+    .getElementById("chapterCheck")
+    .querySelector('input[type="radio"]');
+  const duaRadio = document
+    .getElementById("duaCheck")
+    .querySelector('input[type="radio"]');
+
+  duaRadio.addEventListener("click", function () {
+    if (duaRadio.checked) {
+      chapterRadio.checked = false;
+      renderFavorites("dua");
+    }
+  });
+
+  chapterRadio.addEventListener("click", function () {
+    if (chapterRadio.checked) {
+      duaRadio.checked = false;
+      renderFavorites("chapter");
+    }
+  });
+});
+
+function loadAd() {
+  fetch("http://92.38.48.73/api/ads/last")
+    .then(response => response.json())
+    .then(data => {
+      const ad = data;
+      const mainAdImg = document.getElementById("mainAd");
+      const mainAdLink = document.getElementById("mainA");
+
+      mainAdImg.src = `http://92.38.48.73/ads/${ad.img}`;
+      mainAdLink.href = ad.url;
+    })
+    .catch(error => {
+      console.error("Ошибка при загрузке рекламы:", error);
+    });
+}
+loadAd();
 
 renderCategory();
 renderChapter();
+let type = "chapter";
+renderFavorites(type);

@@ -19,7 +19,7 @@ body {
   padding: 7px;
   display: flex;
   height: 90px;
-  padding-bottom: 0px;
+  margin-bottom: 85px;
   position: fixed;
   width: 100%;
   top: 0;
@@ -181,16 +181,11 @@ body {
   font-size: 14px;
 }
 .navbar_bottom {
-  background-color: #0c6298;
   height: 50px;
   display: flex;
   overflow-x: auto;
   white-space: nowrap;
   scroll-snap-type: x mandatory;
-  position: fixed;
-  top: 90px;
-  left: 0;
-  z-index: 1000;
   width: 100%;
 }
 .navbar_bottom__a {
@@ -203,6 +198,7 @@ body {
   cursor: pointer;
   align-items: center;
   border-bottom: 3px solid #0c6298;
+  margin-right: 9px;
 }
 .navbar_bottom__a:hover {
   background-color: #287db2;
@@ -214,9 +210,9 @@ body {
   background-color: #f0f0f0;
   scroll-snap-align: start;
   width: 100vh;
-  margin-top: 50px;
   overflow-y: scroll !important;
   flex-shrink: 0;
+  margin-top: 85px;
 }
 .active-section {
   border-bottom: 3px solid black;
@@ -296,8 +292,12 @@ body {
   margin-right: 2px;
   margin-left: 2px;
 }
-.img__star {
-  width: 50px;
+.img__active {
+  display: block;
+  width: 30px;
+}
+.img__nonactive {
+  display: none !important;
 }
 #section2 {
   display: flex;
@@ -305,6 +305,24 @@ body {
   max-height: 100vh;
   background-color: rgb(89, 89, 89);
   overflow-y: scroll !important;
+}
+#section3 {
+  width: 100vw;
+  background-color: transparent;
+  margin-top: 0px;
+  overflow-y: scroll !important;
+  flex-shrink: 0;
+  background-color: #5c5b5b;
+  max-height: 100vw;
+}
+.sect3 {
+  background-color: #5c5b5b;
+  flex: 0 0 100vw;
+  height: 100vh;
+  scroll-snap-align: start;
+  overflow-y: auto;
+  overflow: auto;
+  margin-top: 85px;
 }
 .card-content {
   color: white;
@@ -506,13 +524,16 @@ p {
 .dua {
   margin: 5px auto;
   margin-bottom: 12px;
-  width: 310px;
+  width: 310px !important;
   display: flex;
   flex-direction: column !important;
   align-items: center;
   background-color: rgb(50, 50, 50);
   border-radius: 18px;
   box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.5);
+}
+.dua__navbar__p {
+  width: 75%;
 }
 .dua__navbar {
   border-top-left-radius: 18px;
@@ -521,13 +542,13 @@ p {
   width: 100%;
   background-color: #0c6298;
   color: white;
-  justify-content: center !important;
   align-items: center;
-  text-align: center;
+  text-align: center !important;
   height: 60px;
 }
 p {
   margin: 0;
+  text-wrap: wrap;
 }
 .dua__img {
   height: 40px;
@@ -561,11 +582,13 @@ p {
   margin: 10px 0;
 }
 .transcriptContent {
+  text-align: start !important;
   font-size: 19px;
   font-weight: bold;
   margin: 10px 0;
 }
 .russianContent {
+  text-align: start !important;
   font-size: 19px;
   color: rgb(221, 221, 221);
 }
@@ -581,4 +604,34 @@ p {
 }
 .audio__container {
   margin-top: 10px;
+}
+#indexCheck {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+}
+#chapterCheck {
+  margin: 0 7px;
+}
+#duaCheck {
+  margin: 0 7px;
+}
+.chapterP {
+  color: white;
+}
+#mainAd {
+  height: 35px;
+  width: 300px;
+}
+.navv {
+  display: flex;
+  position: fixed;
+  top: 90px;
+  left: 0;
+  z-index: 1000;
+  width: 100%;
+  flex-direction: column;
+  background-color: #0c6298;
+  align-items: center;
 }

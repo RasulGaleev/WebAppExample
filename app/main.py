@@ -1,8 +1,10 @@
 import os
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.requests import Request
+from fastapi.templating import Jinja2Templates
 
 from app.api import router as api_router
 
@@ -14,8 +16,8 @@ app = FastAPI(
     redirect_slashes=False
 )
 
-# template_dir = os.path.join("app", "templates")
-# templates = Jinja2Templates(directory=template_dir)
+template_dir = os.path.join("app", "templates")
+templates = Jinja2Templates(directory=template_dir)
 
 static_dir = os.path.join("app", "static")
 app.mount("/audio", StaticFiles(directory=os.path.join(static_dir, "audio")), name="audio")
@@ -26,15 +28,16 @@ app.mount("/ads", StaticFiles(directory=os.path.join(static_dir, "ads")), name="
 
 app.include_router(api_router)
 
-# @app.get("/")
-# async def main_page(request: Request):
-#     return templates.TemplateResponse("index.html", {"request": request})
-#
-#
-# @app.get("/dua")
-# async def dua_page(request: Request, item_id: int = Query(..., alias="itemId")):
-#     return templates.TemplateResponse("dua.html", {"request": request, "item_id": item_id})
-#
+
+@app.get("/")
+async def main_page(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
+
+
+@app.get("/dua")
+async def dua_page(request: Request, item_id: int = Query(..., alias="item_id")):
+    return templates.TemplateResponse("dua.html", {"request": request, "item_id": item_id})
+
 
 origins = [
     "http://127.0.0.1",
