@@ -546,6 +546,7 @@ async function renderFavorites(type) {
         data2.forEach(item => {
           const chapterElement = document.createElement("div");
           chapterElement.classList.add("chapter");
+          chapterElement.classList.add("prog");
           chapterElement.setAttribute("data-item-id", item.id);
           chapterElement.innerHTML = `
         <div class="chapter_left">
@@ -593,6 +594,7 @@ async function renderFavorites(type) {
             let requestAPI2 = `${AUDIO_API}/${item.audio}`;
             const duaElement = document.createElement("div");
             duaElement.classList.add("dua");
+            duaElement.classList.add("prog");
             duaElement.setAttribute("data-item-id", item.id);
             duaElement.innerHTML = `
                           <div class="dua__navbar">
@@ -699,18 +701,16 @@ document.addEventListener("DOMContentLoaded", function () {
   const duaRadio = document.getElementById("duaCheck");
 
   duaRadio.addEventListener("click", function () {
-    if (duaRadio.checked) {
-      console.log("wtf");
-      renderFavorites("dua");
-      chapterRadio.checked = false;
-    }
+    console.log("wtf");
+    renderFavorites("dua");
+    chapterRadio.checked = false;
+    renderChapter();
   });
 
   chapterRadio.addEventListener("click", function () {
-    if (chapterRadio.checked) {
-      renderFavorites("chapter");
-      duaRadio.checked = false;
-    }
+    renderFavorites("chapter");
+    duaRadio.checked = false;
+    renderChapter();
   });
 });
 

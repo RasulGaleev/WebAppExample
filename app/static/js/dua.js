@@ -156,7 +156,16 @@ async function deletingDua(id) {
 
 async function renderFavorites2(type) {
   let favoriteList = document.querySelector("#section3");
-  favoriteList.innerHTML = "";
+  let chapters = document.querySelectorAll(".chapter");
+
+  chapters.forEach(chapter => {
+    chapter.parentNode.removeChild(chapter);
+  });
+  let duas = document.querySelectorAll(".dua");
+
+  duas.forEach(dua => {
+    dua.parentNode.removeChild(dua);
+  });
   let userId = 1342244632;
   let requestAPI = `${FAVORITE_API}filter?user_id=${userId}&content_type=${type}`;
   let res = await fetch(requestAPI);
@@ -165,10 +174,11 @@ async function renderFavorites2(type) {
   if (type === "chapter") {
     try {
       for (const item of data) {
-        let requestAPI3 = `${CHAPTER_API}/filter?chapter_id=${item.id}`;
+        let requestAPI3 = `${CHAPTER_API}/filter?chapter_id=${item.content_id}`;
         let res2 = await fetch(requestAPI3);
         let data2 = await res2.json();
-        let itemId = item.id;
+        let cont = item.content_id;
+        let idd = item.id;
 
         data2.forEach(item => {
           const chapterElement = document.createElement("div");
@@ -185,7 +195,8 @@ async function renderFavorites2(type) {
           const starImageYellow = chapterElement.querySelector("#img_yellow");
           starImageYellow.addEventListener("click", async function (event) {
             event.stopPropagation();
-            deletingChapter(itemId);
+            deletingChapter(idd);
+            renderChapter();
           });
 
           chapterElement.addEventListener("click", function (event) {
@@ -205,11 +216,11 @@ async function renderFavorites2(type) {
   if (type === "dua") {
     try {
       for (const item of data) {
-        let requestAPI3 = `${DUA_API}/filter?dua_id=${item.id}`;
+        let requestAPI3 = `${DUA_API}/filter?dua_id=${item.content_id}`;
         let res2 = await fetch(requestAPI3);
         let data2 = await res2.json();
-        let contentId = item.content_id;
-        let itemId = item.id;
+        let itemId = item.content_id;
+        let idd = item.id;
 
         if (data2.length === 0) {
           console.log("wtf");
@@ -260,9 +271,8 @@ async function renderFavorites2(type) {
             const starImageYellow = duaElement.querySelector("#img_yellow");
             starImageYellow.addEventListener("click", async function (event) {
               event.stopPropagation();
-              if (itemId == item.id) {
-                deletingDua(contentId);
-              }
+              deletingDua(idd);
+              renderChapter();
             });
             favoriteList.appendChild(duaElement);
           });
