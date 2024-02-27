@@ -458,54 +458,54 @@ async function renderChapter() {
         </div>
         <p class="chapter__name">${item.chapter}</p>
     `;
+
       const starImageWhite = chapterElement.querySelector("#img_white");
       const starImageYellow = chapterElement.querySelector("#img_yellow");
+
       data2.forEach(item => {
+        let cont = item.content_id;
         let itemId = chapterElement.getAttribute("data-item-id");
-        if (item.id == itemId) {
+        if (cont == itemId) {
           starImageWhite.classList.add("img__nonactive");
+          starImageWhite.classList.remove("img__active");
           starImageYellow.classList.remove("img__nonactive");
           starImageYellow.classList.add("img__active");
         }
-      });
 
-      chapterElement.addEventListener("click", async function (event) {
-        let itemId = chapterElement.getAttribute("data-item-id");
-        window.location.href = `dua?itemId=${itemId}`;
-        renderContent(itemId);
-      });
+        chapterElement.addEventListener("click", async function (event) {
+          let itemId = chapterElement.getAttribute("data-item-id");
+          window.location.href = `dua?itemId=${itemId}`;
+          renderContent(itemId);
+        });
 
-      starImageWhite.addEventListener("click", async function (event) {
-        starImageWhite.classList.add("img__nonactive");
-        starImageYellow.classList.remove("img__nonactive");
-        starImageYellow.classList.add("img__active");
+        starImageWhite.addEventListener("click", async function (event) {
+          starImageWhite.classList.add("img__nonactive");
+          starImageWhite.classList.remove("img__active");
+          starImageYellow.classList.remove("img__nonactive");
+          starImageYellow.classList.add("img__active");
 
-        event.stopPropagation();
-        const contentId = starImageWhite.getAttribute("data-item-id");
-        const contentType = starImageWhite.getAttribute("data-content-type");
+          event.stopPropagation();
+          const contentId = starImageWhite.getAttribute("data-item-id");
+          const contentType = starImageWhite.getAttribute("data-content-type");
 
-        const favoriteData = {
-          content_id: parseInt(contentId),
-          content_type: contentType,
-          user_id: user,
-        };
+          const favoriteData = {
+            content_id: parseInt(contentId),
+            content_type: contentType,
+            user_id: user,
+          };
 
-        postingChapter(favoriteData);
-      });
-      starImageYellow.addEventListener("click", async function (event) {
-        event.stopPropagation();
-        let requestAPI4 = `${FAVORITE_API}filter?user_id=${user}&content_type=chapter`;
-        let favoriteRes = await fetch(requestAPI4);
-        let favoriteData = await favoriteRes.json();
-        let contentId = starImageYellow.getAttribute("data-item-id");
-        console.log(contentId);
-        for (const item of favoriteData) {
-          if (item.id == contentId) {
-            deletingChapter(contentId);
-            starImageWhite.classList.remove("img__nonactive");
-            starImageYellow.classList.add("img__nonactive");
-          }
-        }
+          postingChapter(favoriteData);
+        });
+
+        starImageYellow.addEventListener("click", async function (event) {
+          event.stopPropagation();
+          console.log(cont);
+          deletingChapter(cont);
+          starImageWhite.classList.remove("img__nonactive");
+          starImageWhite.classList.add("img__active");
+          starImageYellow.classList.add("img__nonactive");
+          starImageYellow.classList.remove("img__active");
+        });
       });
 
       chapterList.appendChild(chapterElement);
@@ -537,9 +537,11 @@ async function renderFavorites(type) {
   if (type === "chapter") {
     try {
       for (const item of data) {
-        let requestAPI3 = `${CHAPTER_API}/filter?chapter_id=${item.id}`;
+        let requestAPI3 = `${CHAPTER_API}/filter?chapter_id=${item.content_id}`;
         let res2 = await fetch(requestAPI3);
         let data2 = await res2.json();
+        let cont = item.content_id;
+        let idd = item.id;
 
         data2.forEach(item => {
           const chapterElement = document.createElement("div");
@@ -555,14 +557,14 @@ async function renderFavorites(type) {
     `;
           const starImageYellow = chapterElement.querySelector("#img_yellow");
           starImageYellow.addEventListener("click", async function (event) {
-            let itemId = chapterElement.getAttribute("data-item-id");
             event.stopPropagation();
-            deletingChapter(itemId);
+            deletingChapter(idd);
+            renderChapter();
           });
 
           chapterElement.addEventListener("click", function (event) {
             let itemId = chapterElement.getAttribute("data-item-id");
-            window.location.href = `dua.html?itemId=${itemId}`;
+            window.location.href = `dua?itemId=${itemId}`;
             renderContent(itemId);
           });
           favoriteList.appendChild(chapterElement);
@@ -577,10 +579,11 @@ async function renderFavorites(type) {
   if (type === "dua") {
     try {
       for (const item of data) {
-        let requestAPI3 = `${DUA_API}/filter?dua_id=${item.id}`;
+        let requestAPI3 = `${DUA_API}/filter?dua_id=${item.content_id}`;
         let res2 = await fetch(requestAPI3);
         let data2 = await res2.json();
-        let itemId = item.id;
+        let itemId = item.content_id;
+        let idd = item.id;
 
         if (data2.length === 0) {
           console.log("wtf");
@@ -631,9 +634,8 @@ async function renderFavorites(type) {
             const starImageYellow = duaElement.querySelector("#img_yellow");
             starImageYellow.addEventListener("click", async function (event) {
               event.stopPropagation();
-              if (itemId == item.id) {
-                deletingDua(itemId);
-              }
+              deletingDua(idd);
+              renderChapter();
             });
             favoriteList.appendChild(duaElement);
           });
@@ -664,10 +666,10 @@ async function postingChapter(favoriteData) {
       throw new Error("Ошибка при добавлении в избранное");
     }
     console.log("Успешно добавлено в избранное");
+    renderFavorites("chapter");
   } catch (error) {
     console.error("Произошла ошибка при добавлении в избранное:", error);
   }
-  renderFavorites("chapter");
 }
 
 async function deletingChapter(id) {
@@ -679,6 +681,7 @@ async function deletingChapter(id) {
       // Обработка успешного ответа
       if (response.ok) {
         console.log("Избранный элемент успешно удален");
+        renderFavorites("chapter");
       } else {
         console.error("Ошибка удаления избранного элемента");
       }
@@ -690,7 +693,6 @@ async function deletingChapter(id) {
         error
       );
     });
-  renderFavorites("chapter");
 }
 document.addEventListener("DOMContentLoaded", function () {
   const chapterRadio = document
@@ -725,6 +727,7 @@ async function deletingDua(id) {
       // Обработка успешного ответа
       if (response.ok) {
         console.log("Избранный элемент успешно удален");
+        renderFavorites("dua");
       } else {
         console.error("Ошибка удаления избранного элемента");
       }
@@ -736,7 +739,6 @@ async function deletingDua(id) {
         error
       );
     });
-  renderFavorites("dua");
 }
 
 function loadAd() {

@@ -19,8 +19,8 @@ async function renderContent(itemId) {
   contentList.innerHTML = "";
   let requestAPI = `${DUA_API}/filter?chapter_id=${itemId}`;
   let user = 1342244632;
-  let requestAPI2 = `${FAVORITE_API}filter?user_id=${user}&content_type=dua`;
-  let res2 = await fetch(requestAPI2);
+  let requestAPI3 = `${FAVORITE_API}filter?user_id=${user}&content_type=dua`;
+  let res2 = await fetch(requestAPI3);
   let data2 = await res2.json();
   try {
     let res = await fetch(requestAPI);
@@ -74,7 +74,7 @@ async function renderContent(itemId) {
       const starImageYellow = duaElement.querySelector("#img_yellow");
       data2.forEach(item => {
         let itemId = duaElement.getAttribute("data-item-id");
-        if (item.id == itemId) {
+        if (item.content_id == itemId) {
           starImageWhite.classList.add("img__nonactive");
           starImageWhite.classList.remove("dua__img");
           starImageYellow.classList.remove("img__nonactive");
@@ -85,16 +85,19 @@ async function renderContent(itemId) {
         event.stopPropagation();
         let contentId = duaElement.getAttribute("data-item-id");
         for (const item of data2) {
-          if (item.id == contentId) {
-            deletingDua(contentId);
+          if (item.content_id == contentId) {
+            let itemId = item.id;
+            deletingDua(itemId);
             starImageWhite.classList.remove("img__nonactive");
             starImageWhite.classList.add("dua__img");
             starImageYellow.classList.add("img__nonactive");
+            starImageYellow.classList.remove("dua__img");
           }
         }
       });
       starImageWhite.addEventListener("click", async function (event) {
         starImageWhite.classList.add("img__nonactive");
+        starImageWhite.classList.remove("dua__img");
         starImageYellow.classList.remove("img__nonactive");
         starImageYellow.classList.add("dua__img");
 
@@ -187,7 +190,7 @@ async function renderFavorites2(type) {
 
           chapterElement.addEventListener("click", function (event) {
             let itemId = chapterElement.getAttribute("data-item-id");
-            window.location.href = `dua.html?itemId=${itemId}`;
+            window.location.href = `dua?itemId=${itemId}`;
             renderContent(itemId);
           });
           favoriteList.appendChild(chapterElement);

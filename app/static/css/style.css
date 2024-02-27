@@ -312,7 +312,8 @@ body {
   overflow-y: scroll !important;
   flex-shrink: 0;
   background-color: #5c5b5b;
-  max-height: 100vw;
+  max-height: 100vh;
+  min-height: 100%;
   margin-top: 50px;
 }
 .card-content {
