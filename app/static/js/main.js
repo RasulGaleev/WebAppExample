@@ -462,9 +462,9 @@ async function renderChapter() {
 
       let cont;
       let idg;
-      data2.forEach(item => {
-        cont = item.content_id;
-        idg = item.id;
+      data2.forEach(dataItem => {
+        cont = dataItem.content_id;
+        idg = dataItem.id;
         let itemId = chapterElement.getAttribute("data-item-id");
         if (cont == itemId) {
           starImageWhite.classList.add("img__nonactive");
@@ -495,8 +495,7 @@ async function renderChapter() {
           user_id: user,
         };
 
-        await postingChapter(favoriteData);
-        renderChapter();
+        await postingChapter(favoriteData, () => renderChapter());
       });
 
       starImageYellow.addEventListener("click", async function (event) {
@@ -506,8 +505,7 @@ async function renderChapter() {
         starImageWhite.classList.add("img__active");
         event.stopPropagation();
         console.log(idg);
-        await deletingChapter(idg);
-        renderChapter(); // Перерисовываем список глав после изменения избранного
+        await deletingChapter(idg, () => renderChapter());
       });
 
       chapterList.appendChild(chapterElement);

@@ -97,8 +97,7 @@ async function renderContent(itemId) {
           user_id: user,
         };
 
-        postingDua(favoriteData);
-        renderContent(itid);
+        await postingDua(favoriteData, () => renderContent(itid));
       });
       starImageYellow.addEventListener("click", async function (event) {
         let contentId = duaElement.getAttribute("data-item-id");
@@ -109,8 +108,7 @@ async function renderContent(itemId) {
             starImageYellow.classList.add("img__nonactive");
             starImageYellow.classList.remove("dua__img");
             let itemId = item.id;
-            deletingDua(itemId);
-            renderContent(itid);
+            await deletingDua(itemId, () => renderContent(itid));
           }
         }
       });
