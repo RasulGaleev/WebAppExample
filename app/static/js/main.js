@@ -471,41 +471,41 @@ async function renderChapter() {
           starImageYellow.classList.remove("img__nonactive");
           starImageYellow.classList.add("img__active");
         }
+      });
 
-        chapterElement.addEventListener("click", async function (event) {
-          let itemId = chapterElement.getAttribute("data-item-id");
-          window.location.href = `dua?itemId=${itemId}`;
-          renderContent(itemId);
-        });
+      chapterElement.addEventListener("click", async function (event) {
+        let itemId = chapterElement.getAttribute("data-item-id");
+        window.location.href = `dua?itemId=${itemId}`;
+        renderContent(itemId);
+      });
 
-        starImageWhite.addEventListener("click", async function (event) {
-          starImageWhite.classList.add("img__nonactive");
-          starImageWhite.classList.remove("img__active");
-          starImageYellow.classList.remove("img__nonactive");
-          starImageYellow.classList.add("img__active");
+      starImageWhite.addEventListener("click", async function (event) {
+        starImageWhite.classList.add("img__nonactive");
+        starImageWhite.classList.remove("img__active");
+        starImageYellow.classList.remove("img__nonactive");
+        starImageYellow.classList.add("img__active");
 
-          event.stopPropagation();
-          const contentId = starImageWhite.getAttribute("data-item-id");
-          const contentType = starImageWhite.getAttribute("data-content-type");
+        event.stopPropagation();
+        const contentId = starImageWhite.getAttribute("data-item-id");
+        const contentType = starImageWhite.getAttribute("data-content-type");
 
-          const favoriteData = {
-            content_id: parseInt(contentId),
-            content_type: contentType,
-            user_id: user,
-          };
+        const favoriteData = {
+          content_id: parseInt(contentId),
+          content_type: contentType,
+          user_id: user,
+        };
 
-          postingChapter(favoriteData);
-        });
+        postingChapter(favoriteData);
+      });
 
-        starImageYellow.addEventListener("click", async function (event) {
-          event.stopPropagation();
-          console.log(cont);
-          deletingChapter(cont);
-          starImageWhite.classList.remove("img__nonactive");
-          starImageWhite.classList.add("img__active");
-          starImageYellow.classList.add("img__nonactive");
-          starImageYellow.classList.remove("img__active");
-        });
+      starImageYellow.addEventListener("click", async function (event) {
+        event.stopPropagation();
+        console.log(cont);
+        deletingChapter(cont);
+        starImageWhite.classList.remove("img__nonactive");
+        starImageWhite.classList.add("img__active");
+        starImageYellow.classList.add("img__nonactive");
+        starImageYellow.classList.remove("img__active");
       });
 
       chapterList.appendChild(chapterElement);
@@ -695,12 +695,8 @@ async function deletingChapter(id) {
     });
 }
 document.addEventListener("DOMContentLoaded", function () {
-  const chapterRadio = document
-    .getElementById("chapterCheck")
-    .querySelector('input[type="radio"]');
-  const duaRadio = document
-    .getElementById("duaCheck")
-    .querySelector('input[type="radio"]');
+  const chapterRadio = document.getElementById("chapterCheck");
+  const duaRadio = document.getElementById("duaCheck");
 
   duaRadio.addEventListener("click", function () {
     if (duaRadio.checked) {
