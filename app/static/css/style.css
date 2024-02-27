@@ -641,3 +641,6 @@ p {
   background-color: #0c6298;
   align-items: center;
 }
+.unvision {
+  display: none;
+}

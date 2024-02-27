@@ -481,14 +481,13 @@ async function renderChapter() {
       });
 
       starImageWhite.addEventListener("click", async function (event) {
+        event.stopPropagation();
+        const contentId = starImageWhite.getAttribute("data-item-id");
+        const contentType = starImageWhite.getAttribute("data-content-type");
         starImageWhite.classList.add("img__nonactive");
         starImageWhite.classList.remove("img__active");
         starImageYellow.classList.remove("img__nonactive");
         starImageYellow.classList.add("img__active");
-
-        event.stopPropagation();
-        const contentId = starImageWhite.getAttribute("data-item-id");
-        const contentType = starImageWhite.getAttribute("data-content-type");
 
         const favoriteData = {
           content_id: parseInt(contentId),
@@ -666,6 +665,7 @@ async function postingChapter(favoriteData) {
       body: JSON.stringify(favoriteData),
     });
     console.log("Успешно добавлено в избранное");
+    renderFavorites("chapter");
   } catch (error) {
     console.error("Произошла ошибка при добавлении в избранное:", error);
   }
