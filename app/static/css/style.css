@@ -212,7 +212,7 @@ body {
   width: 100vh;
   overflow-y: scroll !important;
   flex-shrink: 0;
-  margin-top: 85px;
+  margin-top: 50px;
 }
 .active-section {
   border-bottom: 3px solid black;
@@ -221,7 +221,6 @@ body {
 .scroll-container {
   display: flex;
   overflow-x: auto;
-  overflow-y: scroll;
   white-space: nowrap;
   scroll-snap-type: x mandatory;
   width: 100%;
@@ -314,15 +313,7 @@ body {
   flex-shrink: 0;
   background-color: #5c5b5b;
   max-height: 100vw;
-}
-.sect3 {
-  background-color: #5c5b5b;
-  flex: 0 0 100vw;
-  height: 100vh;
-  scroll-snap-align: start;
-  overflow-y: auto;
-  overflow: auto;
-  margin-top: 85px;
+  margin-top: 50px;
 }
 .card-content {
   color: white;
@@ -623,6 +614,20 @@ p {
 #mainAd {
   height: 35px;
   width: 300px;
+  display: none;
+}
+#mainA2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 5px;
+}
+#mainAd2 {
+  height: 70px;
+  width: 215px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .navv {
   display: flex;

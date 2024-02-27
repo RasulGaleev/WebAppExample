@@ -562,7 +562,7 @@ async function renderFavorites(type) {
 
           chapterElement.addEventListener("click", function (event) {
             let itemId = chapterElement.getAttribute("data-item-id");
-            window.location.href = `dua?itemId=${itemId}`;
+            window.location.href = `dua.html?itemId=${itemId}`;
             renderContent(itemId);
           });
           favoriteList.appendChild(chapterElement);
