@@ -15,6 +15,7 @@ if (itemId) {
 }
 
 async function renderContent(itemId) {
+  const itid = itemId;
   let contentList = document.querySelector("#content2");
   contentList.innerHTML = "";
   let requestAPI = `${DUA_API}/filter?chapter_id=${itemId}`;
@@ -81,19 +82,6 @@ async function renderContent(itemId) {
           starImageYellow.classList.add("dua__img");
         }
       });
-      starImageYellow.addEventListener("click", async function (event) {
-        let contentId = duaElement.getAttribute("data-item-id");
-        for (const item of data2) {
-          if (item.content_id == contentId) {
-            let itemId = item.id;
-            deletingDua(itemId);
-            starImageWhite.classList.remove("img__nonactive");
-            starImageWhite.classList.add("dua__img");
-            starImageYellow.classList.add("img__nonactive");
-            starImageYellow.classList.remove("dua__img");
-          }
-        }
-      });
       starImageWhite.addEventListener("click", async function (event) {
         starImageWhite.classList.add("img__nonactive");
         starImageWhite.classList.remove("dua__img");
@@ -110,6 +98,21 @@ async function renderContent(itemId) {
         };
 
         postingDua(favoriteData);
+        renderContent(itid);
+      });
+      starImageYellow.addEventListener("click", async function (event) {
+        let contentId = duaElement.getAttribute("data-item-id");
+        for (const item of data2) {
+          if (item.content_id == contentId) {
+            starImageWhite.classList.remove("img__nonactive");
+            starImageWhite.classList.add("dua__img");
+            starImageYellow.classList.add("img__nonactive");
+            starImageYellow.classList.remove("dua__img");
+            let itemId = item.id;
+            deletingDua(itemId);
+            renderContent(itid);
+          }
+        }
       });
       contentList.appendChild(duaElement);
     });

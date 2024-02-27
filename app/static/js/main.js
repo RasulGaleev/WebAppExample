@@ -500,14 +500,14 @@ async function renderChapter() {
       });
 
       starImageYellow.addEventListener("click", async function (event) {
+        starImageYellow.classList.add("img__nonactive");
+        starImageYellow.classList.remove("img__active");
+        starImageWhite.classList.remove("img__nonactive");
+        starImageWhite.classList.add("img__active");
         event.stopPropagation();
         console.log(idg);
         await deletingChapter(idg);
         renderChapter(); // Перерисовываем список глав после изменения избранного
-        starImageWhite.classList.remove("img__nonactive");
-        starImageWhite.classList.add("img__active");
-        starImageYellow.classList.add("img__nonactive");
-        starImageYellow.classList.remove("img__active");
       });
 
       chapterList.appendChild(chapterElement);
