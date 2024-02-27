@@ -484,10 +484,6 @@ async function renderChapter() {
         event.stopPropagation();
         const contentId = starImageWhite.getAttribute("data-item-id");
         const contentType = starImageWhite.getAttribute("data-content-type");
-        starImageWhite.classList.add("img__nonactive");
-        starImageWhite.classList.remove("img__active");
-        starImageYellow.classList.remove("img__nonactive");
-        starImageYellow.classList.add("img__active");
 
         const favoriteData = {
           content_id: parseInt(contentId),
@@ -495,19 +491,24 @@ async function renderChapter() {
           user_id: user,
         };
 
-        await postingChapter(favoriteData);
-        await renderChapter();
+        const success = await postingChapter(favoriteData);
+        if (success) {
+          starImageWhite.classList.add("img__nonactive");
+          starImageWhite.classList.remove("img__active");
+          starImageYellow.classList.remove("img__nonactive");
+          starImageYellow.classList.add("img__active");
+        }
       });
 
       starImageYellow.addEventListener("click", async function (event) {
-        starImageYellow.classList.add("img__nonactive");
-        starImageYellow.classList.remove("img__active");
-        starImageWhite.classList.remove("img__nonactive");
-        starImageWhite.classList.add("img__active");
         event.stopPropagation();
-        console.log(idg);
-        await deletingChapter(idg);
-        await renderChapter();
+        const success = await deletingChapter(idg);
+        if (success) {
+          starImageYellow.classList.add("img__nonactive");
+          starImageYellow.classList.remove("img__active");
+          starImageWhite.classList.remove("img__nonactive");
+          starImageWhite.classList.add("img__active");
+        }
       });
 
       chapterList.appendChild(chapterElement);
