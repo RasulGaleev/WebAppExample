@@ -443,8 +443,6 @@ async function renderChapter() {
     let res = await fetch(requestAPI);
     let data = await res.json();
 
-    console.log(data);
-
     data.forEach(item => {
       const chapterElement = document.createElement("div");
       chapterElement.classList.add("chapter");
@@ -462,8 +460,11 @@ async function renderChapter() {
       const starImageWhite = chapterElement.querySelector("#img_white");
       const starImageYellow = chapterElement.querySelector("#img_yellow");
 
+      let cont;
+      let idg;
       data2.forEach(item => {
-        let cont = item.content_id;
+        cont = item.content_id;
+        idg = item.id;
         let itemId = chapterElement.getAttribute("data-item-id");
         if (cont == itemId) {
           starImageWhite.classList.add("img__nonactive");
@@ -500,8 +501,8 @@ async function renderChapter() {
 
       starImageYellow.addEventListener("click", async function (event) {
         event.stopPropagation();
-        console.log(cont);
-        deletingChapter(cont);
+        console.log(idg);
+        deletingChapter(idg);
         starImageWhite.classList.remove("img__nonactive");
         starImageWhite.classList.add("img__active");
         starImageYellow.classList.add("img__nonactive");
@@ -664,11 +665,7 @@ async function postingChapter(favoriteData) {
       },
       body: JSON.stringify(favoriteData),
     });
-    if (!response.ok) {
-      throw new Error("Ошибка при добавлении в избранное");
-    }
     console.log("Успешно добавлено в избранное");
-    renderFavorites("chapter");
   } catch (error) {
     console.error("Произошла ошибка при добавлении в избранное:", error);
   }
@@ -700,14 +697,14 @@ document.addEventListener("DOMContentLoaded", function () {
   const chapterRadio = document.getElementById("chapterCheck");
   const duaRadio = document.getElementById("duaCheck");
 
-  duaRadio.addEventListener("click", function () {
+  duaRadio.addEventListener("change", function () {
     console.log("wtf");
     renderFavorites("dua");
     chapterRadio.checked = false;
     renderChapter();
   });
 
-  chapterRadio.addEventListener("click", function () {
+  chapterRadio.addEventListener("change", function () {
     renderFavorites("chapter");
     duaRadio.checked = false;
     renderChapter();
