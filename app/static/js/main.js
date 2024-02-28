@@ -80,7 +80,7 @@ function handleScroll(element, event) {
     if (!isScrolling) return;
     e.preventDefault();
     const y = e.pageY - element.offsetTop;
-    const walk = (y - startY) * 2;
+    const walk = (y - startY) * 1;
     element.scrollTop = scrollTop - walk;
   });
 
@@ -88,7 +88,7 @@ function handleScroll(element, event) {
     if (!isScrolling) return;
     e.preventDefault();
     const y = e.touches[0].pageY - element.offsetTop;
-    const walk = (y - startY) * 2;
+    const walk = (y - startY) * 1;
     element.scrollTop = scrollTop - walk;
   });
 
@@ -112,7 +112,7 @@ let startY;
 
 section2.addEventListener("touchstart", e => {
   isScrolling = true;
-  startY = e.touches[0].pageY - section2.offsetTop;
+  startY = e.touches[0].pageY - section1.offsetTop;
   scrollTop = section2.scrollTop;
 });
 
@@ -120,7 +120,7 @@ section2.addEventListener("touchmove", e => {
   if (!isScrolling) return;
   e.preventDefault();
   const y = e.touches[0].pageY - section2.offsetTop;
-  const walk = (y - startY) * 2;
+  const walk = (y - startY) * 1;
   section2.scrollTop = scrollTop - walk;
 });
 
@@ -432,6 +432,7 @@ async function search1(query) {
 async function renderChapter() {
   let chapterList = document.querySelector("#section2");
   chapterList.innerHTML = "";
+
   let requestAPI = `${CHAPTER_API}`;
   let user = 1342244632;
   let requestAPI2 = `${FAVORITE_API}filter?user_id=${user}&content_type=chapter`;
@@ -441,8 +442,6 @@ async function renderChapter() {
   try {
     let res = await fetch(requestAPI);
     let data = await res.json();
-
-    console.log(data);
 
     data.forEach(item => {
       const chapterElement = document.createElement("div");
@@ -457,12 +456,19 @@ async function renderChapter() {
         </div>
         <p class="chapter__name">${item.chapter}</p>
     `;
+
       const starImageWhite = chapterElement.querySelector("#img_white");
       const starImageYellow = chapterElement.querySelector("#img_yellow");
+
+      let cont;
+      let idg;
       data2.forEach(item => {
+        cont = item.content_id;
+        idg = item.id;
         let itemId = chapterElement.getAttribute("data-item-id");
-        if (item.id == itemId) {
+        if (cont == itemId) {
           starImageWhite.classList.add("img__nonactive");
+          starImageWhite.classList.remove("img__active");
           starImageYellow.classList.remove("img__nonactive");
           starImageYellow.classList.add("img__active");
         }
@@ -475,11 +481,13 @@ async function renderChapter() {
       });
 
       starImageWhite.addEventListener("click", async function (event) {
-        starImageWhite.classList.add("img__nonactive");
-        starImageWhite.classList.remove("img__nonactive");
         event.stopPropagation();
         const contentId = starImageWhite.getAttribute("data-item-id");
         const contentType = starImageWhite.getAttribute("data-content-type");
+        starImageWhite.classList.add("img__nonactive");
+        starImageWhite.classList.remove("img__active");
+        starImageYellow.classList.remove("img__nonactive");
+        starImageYellow.classList.add("img__active");
 
         const favoriteData = {
           content_id: parseInt(contentId),
@@ -487,21 +495,19 @@ async function renderChapter() {
           user_id: user,
         };
 
-        postingChapter(favoriteData);
+        await postingChapter(favoriteData);
+        renderChapter();
       });
+
       starImageYellow.addEventListener("click", async function (event) {
+        starImageYellow.classList.add("img__nonactive");
+        starImageYellow.classList.remove("img__active");
+        starImageWhite.classList.remove("img__nonactive");
+        starImageWhite.classList.add("img__active");
         event.stopPropagation();
-        let requestAPI4 = `${FAVORITE_API}filter?user_id=${user}&content_type=chapter`;
-        let favoriteRes = await fetch(requestAPI4);
-        let favoriteData = await favoriteRes.json();
-        let contentId = starImageYellow.getAttribute("data-item-id");
-        for (const item of favoriteData) {
-          if (item.id == contentId) {
-            deletingChapter(contentId);
-            starImageWhite.classList.remove("img__nonactive");
-            starImageYellow.classList.add("img__nonactive");
-          }
-        }
+        console.log(idg);
+        await deletingChapter(idg);
+        renderChapter(); // Перерисовываем список глав после изменения избранного
       });
 
       chapterList.appendChild(chapterElement);
@@ -515,7 +521,16 @@ async function renderChapter() {
 
 async function renderFavorites(type) {
   let favoriteList = document.querySelector("#section3");
-  favoriteList.innerHTML = "";
+  let chapters = document.querySelectorAll(".chapter");
+
+  chapters.forEach(chapter => {
+    chapter.parentNode.removeChild(chapter);
+  });
+  let duas = document.querySelectorAll(".dua");
+
+  duas.forEach(dua => {
+    dua.parentNode.removeChild(dua);
+  });
   let userId = 1342244632;
   let requestAPI = `${FAVORITE_API}filter?user_id=${userId}&content_type=${type}`;
   let res = await fetch(requestAPI);
@@ -524,15 +539,16 @@ async function renderFavorites(type) {
   if (type === "chapter") {
     try {
       for (const item of data) {
-        let requestAPI3 = `${CHAPTER_API}/filter?chapter_id=${item.id}`;
+        let requestAPI3 = `${CHAPTER_API}/filter?chapter_id=${item.content_id}`;
         let res2 = await fetch(requestAPI3);
         let data2 = await res2.json();
-        let contentId = item.content_id;
-        let itemId = item.id;
+        let cont = item.content_id;
+        let idd = item.id;
 
         data2.forEach(item => {
           const chapterElement = document.createElement("div");
           chapterElement.classList.add("chapter");
+          chapterElement.classList.add("prog");
           chapterElement.setAttribute("data-item-id", item.id);
           chapterElement.innerHTML = `
         <div class="chapter_left">
@@ -545,9 +561,8 @@ async function renderFavorites(type) {
           const starImageYellow = chapterElement.querySelector("#img_yellow");
           starImageYellow.addEventListener("click", async function (event) {
             event.stopPropagation();
-            if (itemId == item.id) {
-              deletingChapter(contentId);
-            }
+            deletingChapter(idd);
+            renderChapter();
           });
 
           chapterElement.addEventListener("click", function (event) {
@@ -567,11 +582,11 @@ async function renderFavorites(type) {
   if (type === "dua") {
     try {
       for (const item of data) {
-        let requestAPI3 = `${DUA_API}/filter?dua_id=${item.id}`;
+        let requestAPI3 = `${DUA_API}/filter?dua_id=${item.content_id}`;
         let res2 = await fetch(requestAPI3);
         let data2 = await res2.json();
-        let contentId = item.content_id;
-        let itemId = item.id;
+        let itemId = item.content_id;
+        let idd = item.id;
 
         if (data2.length === 0) {
           console.log("wtf");
@@ -581,6 +596,7 @@ async function renderFavorites(type) {
             let requestAPI2 = `${AUDIO_API}/${item.audio}`;
             const duaElement = document.createElement("div");
             duaElement.classList.add("dua");
+            duaElement.classList.add("prog");
             duaElement.setAttribute("data-item-id", item.id);
             duaElement.innerHTML = `
                           <div class="dua__navbar">
@@ -622,9 +638,8 @@ async function renderFavorites(type) {
             const starImageYellow = duaElement.querySelector("#img_yellow");
             starImageYellow.addEventListener("click", async function (event) {
               event.stopPropagation();
-              if (itemId == item.id) {
-                deletingDua(contentId);
-              }
+              deletingDua(idd);
+              renderChapter();
             });
             favoriteList.appendChild(duaElement);
           });
@@ -651,14 +666,11 @@ async function postingChapter(favoriteData) {
       },
       body: JSON.stringify(favoriteData),
     });
-    if (!response.ok) {
-      throw new Error("Ошибка при добавлении в избранное");
-    }
     console.log("Успешно добавлено в избранное");
+    renderFavorites("chapter");
   } catch (error) {
     console.error("Произошла ошибка при добавлении в избранное:", error);
   }
-  renderFavorites("chapter");
 }
 
 async function deletingChapter(id) {
@@ -670,6 +682,7 @@ async function deletingChapter(id) {
       // Обработка успешного ответа
       if (response.ok) {
         console.log("Избранный элемент успешно удален");
+        renderFavorites("chapter");
       } else {
         console.error("Ошибка удаления избранного элемента");
       }
@@ -681,8 +694,24 @@ async function deletingChapter(id) {
         error
       );
     });
-  renderFavorites("chapter");
 }
+document.addEventListener("DOMContentLoaded", function () {
+  const chapterRadio = document.getElementById("chapterCheck");
+  const duaRadio = document.getElementById("duaCheck");
+
+  duaRadio.addEventListener("change", function () {
+    console.log("wtf");
+    renderFavorites("dua");
+    chapterRadio.checked = false;
+    renderChapter();
+  });
+
+  chapterRadio.addEventListener("change", function () {
+    renderFavorites("chapter");
+    duaRadio.checked = false;
+    renderChapter();
+  });
+});
 
 async function deletingDua(id) {
   let requestAPI = `${FAVORITE_API}delete?favorite_id=${id}`;
@@ -693,6 +722,7 @@ async function deletingDua(id) {
       // Обработка успешного ответа
       if (response.ok) {
         console.log("Избранный элемент успешно удален");
+        renderFavorites("dua");
       } else {
         console.error("Ошибка удаления избранного элемента");
       }
@@ -704,42 +734,18 @@ async function deletingDua(id) {
         error
       );
     });
-  renderFavorites("dua");
 }
-
-document.addEventListener("DOMContentLoaded", function () {
-  const chapterRadio = document
-    .getElementById("chapterCheck")
-    .querySelector('input[type="radio"]');
-  const duaRadio = document
-    .getElementById("duaCheck")
-    .querySelector('input[type="radio"]');
-
-  duaRadio.addEventListener("click", function () {
-    if (duaRadio.checked) {
-      chapterRadio.checked = false;
-      renderFavorites("dua");
-    }
-  });
-
-  chapterRadio.addEventListener("click", function () {
-    if (chapterRadio.checked) {
-      duaRadio.checked = false;
-      renderFavorites("chapter");
-    }
-  });
-});
 
 function loadAd() {
   fetch("http://92.38.48.73/api/ads/last")
     .then(response => response.json())
     .then(data => {
       const ad = data;
-      const mainAdImg = document.getElementById("mainAd");
-      const mainAdLink = document.getElementById("mainA");
+      const mainAdImg2 = document.getElementById("mainAd2");
+      const mainAdLink2 = document.getElementById("mainA2");
 
-      mainAdImg.src = `http://92.38.48.73/ads/${ad.img}`;
-      mainAdLink.href = ad.url;
+      mainAdImg2.src = `http://92.38.48.73/ads/${ad.img}`;
+      mainAdLink2.href = ad.url;
     })
     .catch(error => {
       console.error("Ошибка при загрузке рекламы:", error);
