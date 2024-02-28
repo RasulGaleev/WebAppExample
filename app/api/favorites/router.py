@@ -11,14 +11,17 @@ router = APIRouter(
 )
 
 
-# @router.get("/")
-# async def get_all_favorites(session: AsyncSession = Depends(get_async_session)) -> list[Favorite]:
-#     try:
-#         all_favorites = await FavoriteRepository.find_all(session=session)
-#         return all_favorites
-#
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=str(e))
+@router.post("/create")
+async def create_favorite(favorite_create: FavoriteCreate,
+                          session: AsyncSession = Depends(get_async_session)):
+    try:
+        await FavoriteRepository.create_favorite(favorite_create=favorite_create,
+                                                 session=session)
+
+        return {"status_code": 200, "detail": "Favorite created successfully"}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.get("/filter")
@@ -30,19 +33,6 @@ async def get_favorites_by_filter(user_id: int,
                                                                              content_type=content_type,
                                                                              session=session)
         return favorites_by_content_type
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@router.post("/create")
-async def create_favorite(favorite_create: FavoriteCreate,
-                          session: AsyncSession = Depends(get_async_session)):
-    try:
-        await FavoriteRepository.create_favorite(favorite_create=favorite_create,
-                                                 session=session)
-
-        return {"status_code": 200, "detail": "Favorite created successfully"}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

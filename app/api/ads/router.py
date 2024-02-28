@@ -13,6 +13,19 @@ router = APIRouter(
 )
 
 
+@router.post("/create")
+async def create_ad(ad_create: AdСreate,
+                    session: AsyncSession = Depends(get_async_session)):
+    try:
+        await AdRepository.create_ad(ad_create=ad_create,
+                                     session=session)
+
+        return {"status_code": 200, "detail": "Ad created successfully"}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @router.get("/last")
 async def get_last_ad(session: AsyncSession = Depends(get_async_session)) -> Optional[Ad]:
     try:
@@ -22,19 +35,6 @@ async def get_last_ad(session: AsyncSession = Depends(get_async_session)) -> Opt
             last_ad = ads[-1]
 
         return last_ad
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@router.post("/create")
-async def create_favorite(ad_create: AdСreate,
-                          session: AsyncSession = Depends(get_async_session)):
-    try:
-        await AdRepository.create_ad(ad_create=ad_create,
-                                     session=session)
-
-        return {"status_code": 200, "detail": "Ad created successfully"}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

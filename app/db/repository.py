@@ -11,6 +11,8 @@ from app.api.duas.models import DuaOrm
 from app.api.duas.schemas import Dua
 from app.api.favorites.models import FavoriteOrm
 from app.api.favorites.schemas import Favorite, ContentTypeEnum, FavoriteCreate
+from app.api.users.models import UserOrm
+from app.api.users.schemas import UserCreate, User
 
 
 class CategoryRepository:
@@ -173,3 +175,26 @@ class AdRepository:
         stmt = insert(AdOrm).values(**ad_create.model_dump())
         await session.execute(stmt)
         await session.commit()
+
+
+class UserRepository:
+    @classmethod
+    async def find_all(cls, session: AsyncSession) -> list[User]:
+        query = select(UserOrm)
+        result = await session.execute(query)
+        user_models = result.scalars().all()
+        user_schemas = [User.model_validate(user_model) for user_model in user_models]
+        return user_schemas
+
+    @classmethod
+    async def create_user(cls, user_create: UserCreate, session: AsyncSession) -> None:
+        stmt = insert(UserOrm).values(**user_create.model_dump())
+        await session.execute(stmt)
+        await session.commit()
+
+    @classmethod
+    async def is_user_exists(cls, user_id: int, session: AsyncSession) -> bool:
+        query = select(UserOrm).where(UserOrm.user_id == user_id)
+        result = await session.execute(query)
+        is_user_exists = bool(result.scalar())
+        return is_user_exists
