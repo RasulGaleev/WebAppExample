@@ -232,15 +232,37 @@ sectionOffcanvas.forEach((nav, index) => {
 
 const section1 = document.getElementById("section1");
 
+document.addEventListener("DOMContentLoaded", function () {
+  let searchInput = document.querySelector(".search-input");
+
+  function handleInputChange(event) {
+    const query = event.target.value;
+    search(query);
+    search1(query);
+  }
+
+  searchInput.addEventListener("input", handleInputChange);
+});
+
 async function search(query) {
   let categoryList = document.querySelector("#section1");
-  let requestAPI = `${CATEGORY_API}filter?query=${query}`;
+  let requestAPI = `${CATEGORY_API}/filter?query=${query}`;
   let res = await fetch(requestAPI);
   let data = await res.json();
 
   categoryList.innerHTML = "";
 
   try {
+    let res = await fetch(requestAPI);
+    let data = await res.json();
+    console.log(data);
+
+    const requestAPI2 = `${CHAPTER_API}`;
+    const res2 = await fetch(requestAPI2);
+    const data2 = await res2.json();
+
+    categoryList.innerHTML = "";
+
     data.forEach(async (item, index) => {
       let collapseId = `collapseExample-${index}`;
 
@@ -262,18 +284,20 @@ async function search(query) {
           </div>
         `;
     });
+
     document.querySelectorAll(".category").forEach(categoryElement => {
       categoryElement.addEventListener("click", async () => {
-        const categoryId = categoryElement.dataset.categoryId;
+        const categoryId = parseInt(categoryElement.dataset.categoryId, 10);
 
         const contentContainer = categoryElement.querySelector(".card-content");
-
-        const requestAPI2 = `${CHAPTER_API}/filter?category_id=${categoryId}`;
-        const res = await fetch(requestAPI2);
-        const data2 = await res.json();
-
+        let data3 = [];
+        data2.forEach(function (chapter) {
+          if (chapter.category_id === categoryId) {
+            data3.push(chapter);
+          }
+        });
         let contentHTML = "";
-        data2.forEach(item => {
+        data3.forEach(item => {
           contentHTML += `<div class="content__div" data-item-id="${item.id}"><img src="./media/link-arrow.svg" alt="link-arrow" class="img__link"/><p class="content__p">${item.chapter}</p></div>`;
         });
 
@@ -289,33 +313,15 @@ async function search(query) {
         });
       });
     });
-
-    if (data.length === 0) return;
   } catch (error) {
     console.error("Произошла ошибка:", error);
   }
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-  let searchInput = document.querySelector(".search-input");
-
-  function handleInputChange(event) {
-    const query = event.target.value;
-    search(query);
-    search1(query);
-  }
-
-  searchInput.addEventListener("input", handleInputChange);
-});
-
 async function renderCategory() {
   let categoryList = document.querySelector("#section1");
   categoryList.innerHTML = "";
   let requestAPI = `${CATEGORY_API}`;
-
-  const headers = new Headers({
-    "ngrok-skip-browser-warning": "true",
-  });
 
   try {
     let res = await fetch(requestAPI);
@@ -462,9 +468,9 @@ async function renderChapter() {
 
       let cont;
       let idg;
-      data2.forEach(item => {
-        cont = item.content_id;
-        idg = item.id;
+      data2.forEach(dataItem => {
+        cont = dataItem.content_id;
+        idg = dataItem.id;
         let itemId = chapterElement.getAttribute("data-item-id");
         if (cont == itemId) {
           starImageWhite.classList.add("img__nonactive");
@@ -484,10 +490,6 @@ async function renderChapter() {
         event.stopPropagation();
         const contentId = starImageWhite.getAttribute("data-item-id");
         const contentType = starImageWhite.getAttribute("data-content-type");
-        starImageWhite.classList.add("img__nonactive");
-        starImageWhite.classList.remove("img__active");
-        starImageYellow.classList.remove("img__nonactive");
-        starImageYellow.classList.add("img__active");
 
         const favoriteData = {
           content_id: parseInt(contentId),
@@ -495,19 +497,26 @@ async function renderChapter() {
           user_id: user,
         };
 
-        await postingChapter(favoriteData);
-        renderChapter();
+        const success = await postingChapter(favoriteData);
+        if (success) {
+          starImageWhite.classList.add("img__nonactive");
+          starImageWhite.classList.remove("img__active");
+          starImageYellow.classList.remove("img__nonactive");
+          starImageYellow.classList.add("img__active");
+        }
       });
 
       starImageYellow.addEventListener("click", async function (event) {
-        starImageYellow.classList.add("img__nonactive");
-        starImageYellow.classList.remove("img__active");
-        starImageWhite.classList.remove("img__nonactive");
-        starImageWhite.classList.add("img__active");
         event.stopPropagation();
-        console.log(idg);
-        await deletingChapter(idg);
-        renderChapter(); // Перерисовываем список глав после изменения избранного
+        const success = await deletingChapter(idg);
+        if (success) {
+          starImageWhite.classList.remove("img__nonactive");
+          starImageWhite.classList.add("img__active");
+          starImageYellow.classList.add("img__nonactive");
+          starImageYellow.classList.remove("img__active");
+          const res2 = await fetch(requestAPI2);
+          data2 = await res2.json();
+        }
       });
 
       chapterList.appendChild(chapterElement);
