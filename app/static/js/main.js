@@ -307,7 +307,7 @@ async function search(query) {
         contentElements.forEach(contentElement => {
           contentElement.addEventListener("click", async event => {
             const itemId = contentElement.getAttribute("data-item-id");
-            window.location.href = `dua.html?itemId=${itemId}`;
+            window.location.href = `dua?itemId=${itemId}`;
             renderContent(itemId);
           });
         });
@@ -378,7 +378,7 @@ async function renderCategory() {
         contentElements.forEach(contentElement => {
           contentElement.addEventListener("click", async event => {
             const itemId = contentElement.getAttribute("data-item-id");
-            window.location.href = `dua.html?itemId=${itemId}`;
+            window.location.href = `dua?itemId=${itemId}`;
             renderContent(itemId);
           });
         });
@@ -445,7 +445,7 @@ async function search1(query) {
 
       chapterElement.addEventListener("click", async function (event) {
         let itemId = chapterElement.getAttribute("data-item-id");
-        window.location.href = `dua.html?itemId=${itemId}`;
+        window.location.href = `dua?itemId=${itemId}`;
         renderContent(itemId);
       });
 
@@ -536,7 +536,7 @@ async function renderChapter() {
 
       chapterElement.addEventListener("click", async function (event) {
         let itemId = chapterElement.getAttribute("data-item-id");
-        window.location.href = `dua.html?itemId=${itemId}`;
+        window.location.href = `dua?itemId=${itemId}`;
         renderContent(itemId);
       });
 
@@ -628,7 +628,7 @@ async function renderFavorites(type) {
 
           chapterElement.addEventListener("click", function (event) {
             let itemId = chapterElement.getAttribute("data-item-id");
-            window.location.href = `dua.html?itemId=${itemId}`;
+            window.location.href = `dua?itemId=${itemId}`;
             renderContent(itemId);
           });
           favoriteList.appendChild(chapterElement);
