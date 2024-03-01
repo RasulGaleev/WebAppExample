@@ -458,7 +458,8 @@ async function search1(query) {
           user_id: user,
         };
 
-        await postingChapter(favoriteData, () => renderChapter());
+        await postingChapter(favoriteData);
+        await renderChapter();
       });
 
       starImageYellow.addEventListener("click", async function (event) {
@@ -468,7 +469,8 @@ async function search1(query) {
         starImageWhite.classList.add("img__active");
         event.stopPropagation();
         console.log(idg);
-        await deletingChapter(idg, () => renderChapter());
+        await deletingChapter(idg);
+        await renderChapter();
       });
 
       chapterList.appendChild(chapterElement);
@@ -546,7 +548,8 @@ async function renderChapter() {
           user_id: user,
         };
 
-        await postingChapter(favoriteData, () => renderChapter());
+        await postingChapter(favoriteData);
+        await renderChapter();
       });
 
       starImageYellow.addEventListener("click", async function (event) {
@@ -556,7 +559,8 @@ async function renderChapter() {
         starImageWhite.classList.add("img__active");
         event.stopPropagation();
         console.log(idg);
-        await deletingChapter(idg, () => renderChapter());
+        await deletingChapter(idg);
+        await renderChapter();
       });
 
       chapterList.appendChild(chapterElement);
