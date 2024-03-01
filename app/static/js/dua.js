@@ -83,6 +83,11 @@ async function renderContent(itemId) {
         }
       });
       starImageWhite.addEventListener("click", async function (event) {
+        starImageWhite.classList.add("img__nonactive");
+        starImageWhite.classList.remove("dua__img");
+        starImageYellow.classList.remove("img__nonactive");
+        starImageYellow.classList.add("dua__img");
+
         const contentId = duaElement.getAttribute("data-item-id");
         const contentType = duaElement.getAttribute("data-content-type");
 
@@ -92,25 +97,18 @@ async function renderContent(itemId) {
           user_id: user,
         };
 
-        const success = await postingDua(favoriteData);
-        if (success) {
-          starImageWhite.classList.add("img__nonactive");
-          starImageWhite.classList.remove("dua__img");
-          starImageYellow.classList.remove("img__nonactive");
-          starImageYellow.classList.add("dua__img");
-        }
+        await postingDua(favoriteData, () => renderContent(itid));
       });
       starImageYellow.addEventListener("click", async function (event) {
         let contentId = duaElement.getAttribute("data-item-id");
         for (const item of data2) {
           if (item.content_id == contentId) {
-            const success = await deletingDua(itemId);
-            if (success) {
-              starImageWhite.classList.remove("img__nonactive");
-              starImageWhite.classList.add("dua__img");
-              starImageYellow.classList.add("img__nonactive");
-              starImageYellow.classList.remove("dua__img");
-            }
+            starImageWhite.classList.remove("img__nonactive");
+            starImageWhite.classList.add("dua__img");
+            starImageYellow.classList.add("img__nonactive");
+            starImageYellow.classList.remove("dua__img");
+            let itemId = item.id;
+            await deletingDua(itemId, () => renderContent(itid));
           }
         }
       });
