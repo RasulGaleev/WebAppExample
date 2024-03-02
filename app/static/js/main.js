@@ -3,6 +3,7 @@ const CHAPTER_API = "http://92.38.48.73/api/chapters";
 const DUA_API = "http://92.38.48.73/api/duas";
 const FAVORITE_API = "http://92.38.48.73/api/favorites/";
 const AUDIO_API = "http://92.38.48.73/audio";
+const tg = window.Telegram.WebApp;
 
 function toggleSearch() {
   const navItems = document.querySelector(".nav-items");
@@ -397,7 +398,7 @@ if (itemId) {
 async function search1(query) {
   let chapterList = document.querySelector("#section2");
   chapterList.innerHTML = "";
-  let user = 1342244632;
+  let user = tg.initDataUnsafe.user.id;
   let requestAPIp = `${CHAPTER_API}/filter?query=${query}`;
   let requestAPI2 = `${FAVORITE_API}filter?user_id=${user}&content_type=chapter`;
   let res2 = await fetch(requestAPI2);
@@ -487,7 +488,7 @@ async function renderChapter() {
   chapterList.innerHTML = "";
 
   let requestAPI = `${CHAPTER_API}`;
-  let user = 1342244632;
+  let user = tg.initDataUnsafe.user.id;
   let requestAPI2 = `${FAVORITE_API}filter?user_id=${user}&content_type=chapter`;
   let res2 = await fetch(requestAPI2);
   let data2 = await res2.json();
@@ -584,7 +585,7 @@ async function renderFavorites(type) {
   duas.forEach(dua => {
     dua.parentNode.removeChild(dua);
   });
-  let userId = 1342244632;
+  let userId = tg.initDataUnsafe.user.id;
   let requestAPI = `${FAVORITE_API}filter?user_id=${userId}&content_type=${type}`;
   let res = await fetch(requestAPI);
   let data = await res.json();

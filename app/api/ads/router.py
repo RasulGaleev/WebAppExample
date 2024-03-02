@@ -29,11 +29,7 @@ async def create_ad(ad_create: AdСreate,
 @router.get("/last")
 async def get_last_ad(session: AsyncSession = Depends(get_async_session)) -> Optional[Ad]:
     try:
-        last_ad = None
-        ads = await AdRepository.find_all(session=session)
-        if ads:
-            last_ad = ads[-1]
-
+        last_ad = await AdRepository.find_last(session=session)
         return last_ad
 
     except Exception as e:

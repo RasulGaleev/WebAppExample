@@ -1,6 +1,7 @@
 const DUA_API = "http://92.38.48.73/api/duas";
 const AUDIO_API = "http://92.38.48.73/audio";
 const FAVORITE_API = "http://92.38.48.73/api/favorites/";
+const tg = window.Telegram.WebApp;
 
 const urlParams = new URLSearchParams(window.location.search);
 
@@ -19,7 +20,7 @@ async function renderContent(itemId) {
   let contentList = document.querySelector("#content2");
   contentList.innerHTML = "";
   let requestAPI = `${DUA_API}/filter?chapter_id=${itemId}`;
-  let user = 1342244632;
+  let user = tg.initDataUnsafe.user.id;
   let requestAPI3 = `${FAVORITE_API}filter?user_id=${user}&content_type=dua`;
   let res2 = await fetch(requestAPI3);
   let data2 = await res2.json();

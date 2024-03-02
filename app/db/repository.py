@@ -163,12 +163,17 @@ class FavoriteRepository:
 
 class AdRepository:
     @classmethod
-    async def find_all(cls, session: AsyncSession) -> list[Ad]:
-        query = select(AdOrm).order_by(AdOrm.id)
+    async def find_last(cls, session: AsyncSession) -> Ad:
+        query = select(AdOrm).order_by(desc(AdOrm.id)).limit(1)
         result = await session.execute(query)
-        ad_models = result.scalars().all()
-        ad_schemas = [Ad.model_validate(ad_model) for ad_model in ad_models]
-        return ad_schemas
+        ad_model = result.scalar_one_or_none()
+
+        if ad_model:
+            ad = Ad.model_validate(ad_model)
+        else:
+            ad = None
+
+        return ad
 
     @classmethod
     async def create_ad(cls, ad_create: AdСreate, session: AsyncSession):
